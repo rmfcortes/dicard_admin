@@ -1,0 +1,56 @@
+<ion-header class="ion-no-border">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="close()">
+                <ion-icon slot="start" name="arrow-back" color="primary"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end" *ngIf="product.id">
+            <ion-button (click)="deleteProduct()">
+                {{'COMMON.delete' | translate}}
+                <ion-icon slot="start" name="trash"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ng-container>
+        <div style="width: 100%; text-align: center;">
+            <img [src]="product.url || noPhoto" style="height: 10rem; cursor: pointer;" (click)="photo.click()" /> <br>
+            <input style="display: none" (change)="cropImage($event, 1/.75, true)" type="file" #photo> <br>
+        </div>
+    </ng-container>
+
+    <ion-card style="padding: 1.5rem;">
+        <form #form="ngForm" (submit)="save()">
+            <ion-item>
+                <ion-label color="medium" position="floating">{{'LOGIN.name' | translate}}</ion-label>
+                <ion-input (keyup.enter)="$event.target.blur();" [(ngModel)]="product.name" type="text" name="name" required minlength="3"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label color="medium" position="floating">{{'PRODUCTS.price' | translate}}</ion-label>
+                <ion-input (keyup.enter)="$event.target.blur();" [(ngModel)]="product.price" type="number" name="price" required minlength="3"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label color="medium" position="floating">{{'PRODUCTS.code' | translate}}</ion-label>
+                <ion-input (keyup.enter)="$event.target.blur();" [(ngModel)]="product.code" type="text" name="code" minlength="3"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label color="medium" position="floating">{{'PRODUCTS.description' | translate}}</ion-label>
+                <ion-textarea autoGrow="true" (keyup.enter)="$event.target.blur();" [(ngModel)]="product.description" type="text" name="description" minlength="5"></ion-textarea>
+            </ion-item>
+            <ion-item>
+                <ion-label color="medium">{{'PRODUCTS.section' | translate}}</ion-label>
+                <ion-select [disabled]="sections.length <= 0" [(ngModel)]="product.section" color="medium" okText="{{'COMMON.ok' | translate}}" cancelText="{{'COMMON.cancel' | translate}}" required name="section">
+                    <ion-select-option *ngFor="let item of sections" [value]="item.name">{{item.name | titlecase}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-button class="btn-save" style="margin-top: 2rem" [disabled]="!form.valid || !product.url || !product.section || saving" expand="block" type="submit" shape="round">
+                {{'COMMON.save' | translate}}
+                <ion-spinner *ngIf="saving" name="dots"></ion-spinner>
+            </ion-button>
+        </form>
+    </ion-card>
+
+</ion-content>

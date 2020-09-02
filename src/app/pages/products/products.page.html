@@ -1,0 +1,252 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Products</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ng-container *ngIf="infoReady">
+        <ion-grid fixed>
+            <ion-row>
+                <!-- Form -->
+                <ion-col size="7" class="separate-scroll">
+
+
+                    <!-- Views selector -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PRODUCTS.view' | translate}}</ion-label>
+                            <ion-select [(ngModel)]="profile.view" color="medium" okText="{{'COMMON.ok' | translate}}" cancelText="{{'COMMON.cancel' | translate}}" (ionChange)="saveColor()">
+                                <ion-select-option value="list-img">{{'PRODUCTS.list-img' | translate}}</ion-select-option>
+                                <ion-select-option value="list">{{'PRODUCTS.list' | translate}}</ion-select-option>
+                                <ion-select-option value="block">{{'PRODUCTS.blocks' | translate}}</ion-select-option>
+                                <ion-select-option value="gallery">{{'PRODUCTS.gallery' | translate}}</ion-select-option>
+                                <ion-select-option value="cards">{{'PRODUCTS.cards' | translate}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-card>
+
+
+                    <!-- Section list -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PRODUCTS.sections' | translate}}</ion-label>
+                            <ion-icon slot="end" name="add" color="primary" (click)="showSectionInput()"></ion-icon>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="sections.length > 0 && viewSectionList === false" (click)="viewSectionList = true"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="sections.length > 0 && viewSectionList === true" (click)="viewSectionList = false"></ion-icon>
+                        </ion-item>
+                        <ion-item *ngIf="viewSectionInput">
+                            <ion-input type="text" [(ngModel)]="newSection" placeholder="{{'PRODUCTS.newSection' | translate}}" autoFocus="true" id="inputSection" #inputSection></ion-input>
+                            <ion-icon slot="end" name="close" color="medium" (click)="viewSectionInput = false"></ion-icon>
+                            <ion-button slot="end" (click)="addSection()" shape="round">
+                                {{'COMMON.add' | translate}}
+                            </ion-button>
+                        </ion-item>
+                        <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false" *ngIf="viewSectionList">
+                            <ion-item *ngFor="let section of sections; let i = index">
+                                <ng-container *ngIf="section.edit; else editTemplate">
+                                    <ion-input [(ngModel)]="section.name" #inputSectionEdit></ion-input>
+                                    <ion-reorder slot="end"></ion-reorder>
+                                    <ion-icon slot="end" name="save" color="success" (click)="saveEditSection()"></ion-icon>
+                                    <ion-icon slot="end" name="close" color="danger" (click)="cancelEdit(i)"></ion-icon>
+                                </ng-container>
+                                <ng-template #editTemplate>
+                                    <ion-label>{{section.name}}</ion-label>
+                                    <ion-reorder slot="end"></ion-reorder>
+                                    <ion-icon slot="end" name="pencil" color="primary" (click)="editSection(i)"></ion-icon>
+                                    <ion-icon slot="end" name="trash" color="danger" (click)="removeSection(i, section.name)"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                        </ion-reorder-group>
+                    </ion-card>
+
+
+                    <!-- Product form -->
+                    <ion-card *ngIf="sections.length > 0">
+                        <ion-item>
+                            <ion-label color="medium">{{'PRODUCTS.products' | translate}}</ion-label>
+                            <ion-icon slot="end" name="add" color="primary" (click)="productForm(null)"></ion-icon>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="viewProducts === false && loadedProducts > 0" (click)="viewProducts = true"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="viewProducts === true" (click)="viewProducts = false"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="viewProducts">
+                            <ion-list *ngFor="let section of sections">
+                                <ion-list-header *ngIf="section.products && section.products.length > 0">
+                                    <ion-label color="primary" style="font-size: 10px;">{{section.name}}</ion-label>
+                                </ion-list-header>
+                                <ion-item *ngFor="let product of section.products">
+                                    <ion-label>{{product.name}}</ion-label>
+                                    <ion-icon name="pencil" slot="end" color="primary" (click)="productForm(product)"></ion-icon>
+                                </ion-item>
+                            </ion-list>
+                        </ng-container>
+
+                    </ion-card>
+
+
+                    <!-- Colors form -->
+                    <ion-card>
+                        <ion-item lines="none">
+                            <ion-label color="medium">{{'PROFILE.theme' | translate}}</ion-label>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="viewColors === false" (click)="viewColors = true"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="viewColors === true" (click)="viewColors = false"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="viewColors">
+                            <ion-item>
+                                <ion-label color="medium">{{'PRODUCTS.header' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.segmentButton" (click)="pickerHeader = true"> {{profile.colors.segmentButton}}</div>
+                                <ion-icon *ngIf="pickerHeader" slot="end" name="close" color="primary" (click)="pickerHeader = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontHeader else pickerFontHeaderTemplate">
+                                    <ion-icon (click)="fontpickerHeader.click()" (click)="pickerFontHeader = true" src="../../../assets/icons/font-solid.svg" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontHeaderTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontpickerHeader.click()" (click)="pickerFontHeader = false"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontpickerHeader (fontPickerChange)="changeFont('header', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_header" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerHeader" [color]="profile.colors.segmentButton || 'black'" (onChangeComplete)="setTheme('header')" (onChange)="profile.colors.segmentButton = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PRODUCTS.headerSelected' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.segmentButtonFocused" (click)="pickerHeaderSelected = true"> {{profile.colors.segmentButtonFocused}}</div>
+                                <ion-icon *ngIf="pickerHeaderSelected" slot="end" name="close" color="primary" (click)="pickerHeaderSelected = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerHeaderSelected" [color]="profile.colors.segmentButtonFocused || 'grey'" (onChangeComplete)="setTheme('segment_focused')" (onChange)="profile.colors.segmentButtonFocused = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PRODUCTS.colorName' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.nameProduct" (click)="pickerNameProduct = true"> {{profile.colors.nameProduct}}</div>
+                                <ion-icon *ngIf="pickerNameProduct" slot="end" name="close" color="primary" (click)="pickerNameProduct = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontName else pickerFontNameTemplate">
+                                    <ion-icon (click)="fontpickerName.click()" (click)="pickerFontName = true" src="../../../assets/icons/font-solid.svg" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontNameTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontpickerName.click()" (click)="pickerFontName = false"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontpickerName (fontPickerChange)="changeFont('product_name', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_product_name" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerNameProduct" [color]="profile.colors.nameProduct || 'black'" (onChangeComplete)="setTheme('product_name')" (onChange)="profile.colors.nameProduct = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PRODUCTS.description' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.descriptionProduct" (click)="pickerDescription = true"> {{profile.colors.descriptionProduct}}</div>
+                                <ion-icon *ngIf="pickerDescription" slot="end" name="close" color="primary" (click)="pickerDescription = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontDescription else pickerFontDescriptionTemplate">
+                                    <ion-icon (click)="fontpickerDescription.click()" (click)="pickerFontDescription = true" src="../../../assets/icons/font-solid.svg" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontDescriptionTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontpickerDescription.click()" (click)="pickerFontDescription = false"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontpickerDescription (fontPickerChange)="changeFont('product_description', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_product_description" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerDescription" [color]="profile.colors.descriptionProduct || 'grey'" (onChangeComplete)="setTheme('product_description')" (onChange)="profile.colors.descriptionProduct = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PRODUCTS.price' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.priceProduct" (click)="pickerPrice = true"> {{profile.colors.priceProduct}}</div>
+                                <ion-icon *ngIf="pickerPrice" slot="end" name="close" color="primary" (click)="pickerPrice = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontPrice else pickerFontPriceTemplate">
+                                    <ion-icon (click)="fontpickerPrice.click()" (click)="pickerFontPrice = true" src="../../../assets/icons/font-solid.svg" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontPriceTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontpickerPrice.click()" (click)="pickerFontPrice = false"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontpickerPrice (fontPickerChange)="changeFont('product_price', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_product_price" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerPrice" [color]="profile.colors.priceProduct || 'black'" (onChangeComplete)="setTheme('product_price')" (onChange)="profile.colors.priceProduct = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PRODUCTS.backgroundCard' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.backgroundCard" (click)="pickerBackgroundCard = true"> {{profile.colors.backgroundCard}}</div>
+                                <ion-icon *ngIf="pickerBackgroundCard" slot="end" name="close" color="primary" (click)="pickerBackgroundCard = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerBackgroundCard" [color]="profile.colors.backgroundCard || 'white'" (onChangeComplete)="setTheme('background_card')" (onChange)="profile.colors.backgroundCard = $event.color.hex"></color-sketch>
+                        </ng-container>
+                    </ion-card>
+
+
+                </ion-col>
+
+                <!-- Template preview -->
+                <ion-col size="5">
+                    <div class="smartphone">
+                        <div class="content background">
+                            <ng-container *ngIf="product; else modalProduct">
+                                <div style="width: 100%; background: white;">
+                                    <preload-image [ratio]="{w: 1, h: .75}" [src]="product.url">
+                                    </preload-image>
+                                    <ion-icon color="light" class="topleft arrow-back" (click)="product = null" name="arrow-back"></ion-icon>
+                                </div>
+                                <div class="refill background">
+                                    <ion-item lines="none" style="z-index: 30;">
+                                        <ion-label>
+                                            <h1 class="name-product">{{product.name | titlecase}}</h1>
+                                        </ion-label>
+                                    </ion-item>
+                                </div>
+                                <ion-item lines="none" class="margin">
+                                    <ion-label style="text-align: center;" class="ion-text-wrap">
+                                        <p class="description-product">{{product.description}}</p>
+                                    </ion-label>
+                                </ion-item>
+                            </ng-container>
+                            <ng-template #modalProduct>
+                                <ion-segment scrollable value="'all'" *ngIf="sections.length > 0">
+                                    <ion-segment-button (click)="reset()" class="ion-text-wrap segment" value="'all'">
+                                        {{'PRODUCTS.all' | translate}}
+                                    </ion-segment-button>
+                                    <ng-container *ngFor="let section of sections">
+                                        <ion-segment-button (click)="reset(section.name)" [value]="section.name" class="ion-text-wrap segment">
+                                            {{section.name}}
+                                        </ion-segment-button>
+                                    </ng-container>
+                                </ion-segment>
+                                <ng-container *ngIf="loadedProducts > 0">
+                                    <div [ngSwitch]="profile.view">
+                                        <div *ngSwitchCase="'list-img'">
+                                            <app-list-img [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-list-img>
+                                        </div>
+                                        <div *ngSwitchCase="'block'">
+                                            <app-block [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-block>
+                                        </div>
+                                        <div *ngSwitchCase="'cards'">
+                                            <app-cards [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-cards>
+                                        </div>
+                                        <div *ngSwitchCase="'list'">
+                                            <app-list [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-list>
+                                        </div>
+                                        <div *ngSwitchCase="'gallery'">
+                                            <app-gallery [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-gallery>
+                                        </div>
+                                        <div *ngSwitchDefault>
+                                            <app-list-img [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-list-img>
+                                        </div>
+                                    </div>
+                                </ng-container>
+
+                                <ion-item lines="none" *ngIf="loadingProds">
+                                    <ion-spinner style="margin: auto;" name="dots"></ion-spinner>
+                                </ion-item>
+                                <ion-item style="padding-top: 3rem; text-align: center;" *ngIf="noMore" lines="none">
+                                    <ion-label color="medium">{{'COMMON.noMore' | translate}}</ion-label>
+                                </ion-item>
+                                <ng-container *ngIf="sectionSelected; else elseTemplate">
+                                    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreSectionProducts($event)">
+                                        <ion-infinite-scroll-content loadingSpinner="dots">
+                                        </ion-infinite-scroll-content>
+                                    </ion-infinite-scroll>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreProducts($event)">
+                                        <ion-infinite-scroll-content loadingSpinner="dots">
+                                        </ion-infinite-scroll-content>
+                                    </ion-infinite-scroll>
+                                </ng-template>
+                            </ng-template>
+
+                        </div>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ng-container>
+</ion-content>

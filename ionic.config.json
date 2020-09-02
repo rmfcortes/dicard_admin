@@ -1,0 +1,7 @@
+{
+  "name": "card_generator",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

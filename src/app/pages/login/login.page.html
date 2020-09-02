@@ -1,0 +1,330 @@
+<ion-content>
+    <!-- Desktop design -->
+    <ion-grid style="height: 100vh;" class="desktop">
+        <ion-row class="ion-align-items-center" style="height: 100%;">
+            <!-- Image login -->
+            <ion-col>
+                <img src="../../../assets/img/login.jpg">
+            </ion-col>
+            <!-- Sign in or Sign up form -->
+            <ion-col style="text-align: center; padding: 1.5rem;">
+
+
+                <!-- Sign in form -->
+                <ng-container *ngIf="!create; else signTemplate">
+                    <form [formGroup]="form" (ngSubmit)="signIn()" class="box-form">
+                        <ion-item lines="none" style="text-align: center;">
+                            <ion-label>Awesome logo</ion-label>
+                        </ion-item>
+                        <h1 style="color: var(--ion-color-primary); font-size: xx-large;">{{'LOGIN.title' | translate}}</h1>
+                        <p style="margin-bottom: 4rem;">{{'LOGIN.subtitle' | translate}}</p>
+                        <ion-item lines="none" class="input margin">
+                            <ion-label position="floating" class="grey">{{'LOGIN.email_label' | translate}}</ion-label>
+                            <ion-input type="email" formControlName="email" class="form-control" required></ion-input>
+                        </ion-item>
+                        <ng-container *ngFor="let validation of validation_messages.email">
+                            <div class="error-message" *ngIf="form.get('email').hasError(validation.type) && (form.get('email').dirty || form.get('email').touched)">
+                                {{ validation.message | translate}}
+                            </div>
+                        </ng-container>
+                        <ion-item lines="none" class="input margin">
+                            <ion-label position="floating" class="grey">{{'LOGIN.password_label' | translate}}</ion-label>
+                            <ion-input type="password" required formControlName="password"></ion-input>
+                        </ion-item>
+                        <ng-container *ngFor="let validation of validation_messages.password">
+                            <div class="error-message" *ngIf="form.get('password').hasError(validation.type) && (form.get('password').dirty || form.get('password').touched)">
+                                {{ validation.message | translate}}
+                            </div>
+                        </ng-container>
+                        <ion-grid class="margin">
+                            <ion-row>
+                                <ion-col size="6">
+                                    <ion-item lines="none">
+                                        <ion-label style="font-size: small;" class="ion-text-wrap">{{'LOGIN.persistent' | translate}}</ion-label>
+                                        <ion-checkbox slot="start" style="margin-right: 0.5rem;" formControlName="isPersistent"></ion-checkbox>
+                                    </ion-item>
+                                </ion-col>
+                                <ion-col size="6">
+                                    <ion-item lines="none" (click)="resetPassword()" style="cursor: pointer;">
+                                        <ion-label style="font-size: small;" class="ion-text-wrap"><strong>{{'LOGIN.forgot_password' | translate}}</strong></ion-label>
+                                    </ion-item>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                        <div class="error-message ion-text-wrap" *ngIf="err">
+                            {{ err | translate}}
+                        </div>
+                        <ion-button type="submit" shape="round">
+                            {{'LOGIN.login' | translate}}
+                        </ion-button>
+                        <ion-item lines="none" class="margin" style="text-align: center;">
+                            <ion-label>{{'LOGIN.no_acount' | translate}}
+                                <ion-text color="primary" style="margin-left: 1rem; cursor: pointer;" (click)="setSignUpForm()">
+                                    {{'LOGIN.create' | translate}}
+                                </ion-text>
+                            </ion-label>
+                        </ion-item>
+                    </form>
+                </ng-container>
+
+
+                <!-- Sign up form -->
+                <ng-template #signTemplate>
+                    <form [formGroup]="formSignUp" (ngSubmit)="signUp()" class="box-form">
+                        <ion-item lines="none" style="text-align: center;">
+                            <ion-label>Awesome logo</ion-label>
+                        </ion-item>
+                        <h1 style="color: var(--ion-color-primary); font-size: xx-large;">{{'LOGIN.title_signup' | translate}}</h1>
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col size="6">
+                                    <ion-item lines="none" class="input margin">
+                                        <ion-label position="floating" class="grey">{{'LOGIN.name' | translate}}</ion-label>
+                                        <ion-input type="text" formControlName="name" class="form-control" required></ion-input>
+                                    </ion-item>
+                                    <ng-container *ngFor="let validation of validation_signUp_messages.name">
+                                        <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('name').hasError(validation.type) && (formSignUp.get('name').dirty || formSignUp.get('name').touched)">
+                                            {{ validation.message | translate}}
+                                        </div>
+                                    </ng-container>
+                                </ion-col>
+                                <ion-col size="6">
+                                    <ion-item lines="none" class="input margin">
+                                        <ion-label position="floating" class="grey">{{'LOGIN.last_name' | translate}}</ion-label>
+                                        <ion-input type="text" formControlName="last_name" class="form-control" required></ion-input>
+                                    </ion-item>
+                                    <ng-container *ngFor="let validation of validation_signUp_messages.last_name">
+                                        <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('last_name').hasError(validation.type) && (formSignUp.get('last_name').dirty || formSignUp.get('last_name').touched)">
+                                            {{ validation.message | translate}}
+                                        </div>
+                                    </ng-container>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col size="6">
+                                    <ion-item lines="none" class="input margin">
+                                        <ion-label position="floating" class="grey">{{'LOGIN.email_label' | translate}}</ion-label>
+                                        <ion-input type="email" formControlName="email" class="form-control" required></ion-input>
+                                    </ion-item>
+                                    <ng-container *ngFor="let validation of validation_signUp_messages.email">
+                                        <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('email').hasError(validation.type) && (formSignUp.get('email').dirty || formSignUp.get('email').touched)">
+                                            {{ validation.message | translate}}
+                                        </div>
+                                    </ng-container>
+                                </ion-col>
+                                <ion-col size="6">
+                                    <ion-item lines="none" class="input margin">
+                                        <ion-label position="floating" class="grey">{{'LOGIN.phone' | translate}}</ion-label>
+                                        <ion-input type="tel" formControlName="phone" class="form-control" required></ion-input>
+                                    </ion-item>
+                                    <ng-container *ngFor="let validation of validation_signUp_messages.phone">
+                                        <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('phone').hasError(validation.type) && (formSignUp.get('phone').dirty || formSignUp.get('phone').touched)">
+                                            {{ validation.message | translate}}
+                                        </div>
+                                    </ng-container>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col size="6">
+                                    <ion-item lines="none" class="input margin">
+                                        <ion-label position="floating" class="grey">{{'LOGIN.password_label' | translate}}</ion-label>
+                                        <ion-input type="password" formControlName="password" class="form-control" required></ion-input>
+                                    </ion-item>
+                                    <ng-container *ngFor="let validation of validation_signUp_messages.password">
+                                        <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('password').hasError(validation.type) && (formSignUp.get('password').dirty || formSignUp.get('password').touched)">
+                                            {{ validation.message | translate}}
+                                        </div>
+                                    </ng-container>
+                                </ion-col>
+                                <ion-col size="6">
+                                    <ion-item lines="none" class="input margin">
+                                        <ion-label position="floating" class="grey">{{'LOGIN.confirm' | translate}}</ion-label>
+                                        <ion-input type="password" formControlName="password2" class="form-control" required></ion-input>
+                                    </ion-item>
+                                    <ng-container *ngFor="let validation of validation_signUp_messages.password2">
+                                        <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('password2').hasError(validation.type) && (formSignUp.get('password2').dirty || formSignUp.get('password2').touched)">
+                                            {{ validation.message | translate}}
+                                        </div>
+                                    </ng-container>
+                                    <div class="error-message" *ngIf="!formSignUp.get('password2').errors && formSignUp.hasError('passwordNotMatch') && (formSignUp.get('password2').dirty || formSignUp.get('confirmpassword').touched)">
+                                        Password and Confirm Password fields should match
+                                    </div>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                        <ion-item lines="none">
+                            <ion-label style="font-size: small;" class="ion-text-wrap">{{'LOGIN.persistent' | translate}}</ion-label>
+                            <ion-checkbox slot="start" style="margin-right: 0.5rem;" formControlName="isPersistent"></ion-checkbox>
+                        </ion-item>
+
+
+                        <div class="error-message ion-text-wrap" *ngIf="err">
+                            {{ err | translate}}
+                        </div>
+
+                        <ion-button (click)="signUp()" shape="round" style="margin-top: 2rem;">
+                            {{'LOGIN.sign_up' | translate}}
+                        </ion-button>
+                        <ion-item lines="none" class="margin" style="text-align: center;">
+                            <ion-label>{{'LOGIN.already' | translate}}
+                                <ion-text color="primary" style="margin-left: 1rem; cursor: pointer;" (click)="create = false">
+                                    {{'LOGIN.login' | translate}}
+                                </ion-text>
+                            </ion-label>
+                        </ion-item>
+                    </form>
+                </ng-template>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+
+
+
+
+    <!-- Mobile design -->
+    <div class="mobile-container" class="mobile">
+        <!-- Sign in or Sign up form -->
+        <ng-container *ngIf="!create; else signMobileTemplate">
+            <!-- Sign in form -->
+            <form [formGroup]="form" (ngSubmit)="signIn()" class="mobile-box">
+                <ion-item lines="none" style="text-align: center;">
+                    <ion-label>Awesome logo</ion-label>
+                </ion-item>
+                <h1 style="color: var(--ion-color-primary); font-size: xx-large;">{{'LOGIN.title' | translate}}</h1>
+                <p style="margin-bottom: 4rem;">{{'LOGIN.subtitle' | translate}}</p>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.email_label' | translate}}</ion-label>
+                    <ion-input type="email" formControlName="email" class="form-control" required></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_messages.email">
+                    <div class="error-message" *ngIf="form.get('email').hasError(validation.type) && (form.get('email').dirty || form.get('email').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.password_label' | translate}}</ion-label>
+                    <ion-input type="password" required formControlName="password"></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_messages.password">
+                    <div class="error-message" *ngIf="form.get('password').hasError(validation.type) && (form.get('password').dirty || form.get('password').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-grid class="margin">
+                    <ion-row>
+                        <ion-col size="6">
+                            <ion-item lines="none">
+                                <ion-label style="font-size: small;" class="ion-text-wrap">{{'LOGIN.persistent' | translate}}</ion-label>
+                                <ion-checkbox slot="start" style="margin-right: 0.5rem;" formControlName="isPersistent"></ion-checkbox>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="6">
+                            <ion-item lines="none" (click)="resetPassword()" style="cursor: pointer;">
+                                <ion-label style="font-size: small;" class="ion-text-wrap"><strong>{{'LOGIN.forgot_password' | translate}}</strong></ion-label>
+                            </ion-item>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+                <div class="error-message ion-text-wrap" *ngIf="err">
+                    {{ err | translate}}
+                </div>
+                <ion-button (click)="signIn()" shape="round">
+                    {{'LOGIN.login' | translate}}
+                </ion-button>
+                <ion-item lines="none" class="margin" style="text-align: center;">
+                    <ion-label>{{'LOGIN.no_acount' | translate}}
+                        <ion-text color="primary" style="margin-left: 1rem; cursor: pointer;" (click)="setSignUpForm()">
+                            {{'LOGIN.create' | translate}}
+                        </ion-text>
+                    </ion-label>
+                </ion-item>
+            </form>
+        </ng-container>
+        <ng-template #signMobileTemplate>
+            <!-- Sign up form -->
+            <form [formGroup]="formSignUp" (ngSubmit)="signUp()" class="mobile-box">
+                <ion-item lines="none" style="text-align: center;">
+                    <ion-label>Awesome logo</ion-label>
+                </ion-item>
+                <h1 style="color: var(--ion-color-primary); font-size: xx-large;">{{'LOGIN.title_signup' | translate}}</h1>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.name' | translate}}</ion-label>
+                    <ion-input type="text" required formControlName="name"></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_signUp_messages.name">
+                    <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('name').hasError(validation.type) && (formSignUp.get('name').dirty || formSignUp.get('name').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.last_name' | translate}}</ion-label>
+                    <ion-input type="text" required formControlName="last_name"></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_signUp_messages.last_name">
+                    <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('last_name').hasError(validation.type) && (formSignUp.get('last_name').dirty || formSignUp.get('last_name').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.email_label' | translate}}</ion-label>
+                    <ion-input type="email" required formControlName="email"></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_signUp_messages.email">
+                    <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('email').hasError(validation.type) && (formSignUp.get('email').dirty || formSignUp.get('email').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.phone' | translate}}</ion-label>
+                    <ion-input type="tel" required formControlName="phone"></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_signUp_messages.phone">
+                    <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('phone').hasError(validation.type) && (formSignUp.get('phone').dirty || formSignUp.get('phone').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.password_label' | translate}}</ion-label>
+                    <ion-input type="password" required formControlName="password"></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_signUp_messages.password">
+                    <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('password').hasError(validation.type) && (formSignUp.get('password').dirty || formSignUp.get('password').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-item lines="none" class="input margin">
+                    <ion-label position="floating" class="grey">{{'LOGIN.confirm' | translate}}</ion-label>
+                    <ion-input type="password" required formControlName="password2"></ion-input>
+                </ion-item>
+                <ng-container *ngFor="let validation of validation_signUp_messages.password2">
+                    <div class="error-message ion-text-wrap" *ngIf="formSignUp.get('password2').hasError(validation.type) && (formSignUp.get('password2').dirty || formSignUp.get('password2').touched)">
+                        {{ validation.message | translate}}
+                    </div>
+                </ng-container>
+                <ion-item lines="none">
+                    <ion-label style="font-size: small;" class="ion-text-wrap">{{'LOGIN.persistent' | translate}}</ion-label>
+                    <ion-checkbox slot="start" style="margin-right: 0.5rem;" formControlName="isPersistent"></ion-checkbox>
+                </ion-item>
+                <div class="error-message ion-text-wrap" *ngIf="err">
+                    {{ err | translate}}
+                </div>
+
+                <ion-button (click)="signUp()" shape="round" style="margin-top: 2rem;">
+                    {{'LOGIN.sign_up' | translate}}
+                </ion-button>
+                <ion-item lines="none" class="margin" style="text-align: center;">
+                    <ion-label>{{'LOGIN.already' | translate}}
+                        <ion-text color="primary" style="margin-left: 1rem; cursor: pointer;" (click)="create = false">
+                            {{'LOGIN.login' | translate}}
+                        </ion-text>
+                    </ion-label>
+                </ion-item>
+            </form>
+        </ng-template>
+    </div>
+</ion-content>

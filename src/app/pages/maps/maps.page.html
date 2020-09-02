@@ -1,0 +1,134 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Map</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ng-container *ngIf="profileReady">
+        <ion-grid fixed>
+            <ion-row>
+                <!-- Form -->
+                <ion-col size="7" class="separate-scroll">
+                    <!-- Address input -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label position="floating">{{'MAPS.address' | translate}}</ion-label>
+                            <ion-input type="text" id="address" #address [(ngModel)]="profile.address.address"></ion-input>
+                        </ion-item>
+                    </ion-card>
+                    <p style="text-align: center; font-size: small" class="ion-text-wrap" *ngIf="profile.address.address">{{'MAPS.tip' | translate}}</p>
+
+
+                    <!-- Custom pin -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium" class="ion-text-wrap">{{'MAPS.pin' | translate}}</ion-label>
+                            <ion-button (click)="pin.click()" expand="block" shape="round">
+                                {{'COMMON.search' | translate}}
+                            </ion-button>
+                            <input style="display: none" (change)="setPin($event)" type="file" #pin>
+                        </ion-item>
+                    </ion-card>
+
+                    <!-- Poi setting -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label class="ion-text-wrap" color="medium">{{'MAPS.poi' | translate}}</ion-label>
+                            <ion-toggle [(ngModel)]="profile.address.poi" slot="end" (ionChange)="styleMap()"></ion-toggle>
+                        </ion-item>
+                    </ion-card>
+
+
+                    <!-- Dark Mode -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label class="ion-text-wrap" color="medium">{{'MAPS.dark' | translate}}</ion-label>
+                            <ion-toggle slot="end" [(ngModel)]="profile.address.dark" (ionChange)="styleMap()"></ion-toggle>
+                        </ion-item>
+                    </ion-card>
+
+                    <!-- Theme -->
+                    <ion-card>
+                        <ion-item lines="none">
+                            <ion-label color="medium">{{'PROFILE.theme' | translate}}</ion-label>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="viewTheme === false" (click)="viewTheme = true"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="viewTheme === true" (click)="viewTheme = false"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="viewTheme">
+                            <ion-item>
+                                <ion-label color="medium">{{'MAPS.navigate_icon' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.navigateIcon" (click)="pickerNavigate= true"> {{profile.colors.navigateIcon}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerNavigate" slot="end" name="close" color="primary" (click)="pickerNavigate = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerNavigate" [color]="profile.colors.navigateIcon || 'black'" (onChangeComplete)="setTheme('navigate')" (onChange)="profile.colors.navigateIcon = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'MAPS.location' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.locationTitle" (click)="pickerLocation= true"> {{profile.colors.locationTitle}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerLocation" slot="end" name="close" color="primary" (click)="pickerLocation = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontLocation else pickerFontLocationTemplate">
+                                    <ion-icon (click)="fontpickerLocation.click()" (click)="pickerFontLocation = true" src="../../../assets/icons/font-solid.svg" style="cursor: pointer;" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontLocationTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontpickerLocation.click()" (click)="pickerFontLocation = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontpickerLocation (fontPickerChange)="changeFont('location', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_location" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerLocation" [color]="profile.colors.locationTitle || 'black'" (onChangeComplete)="setTheme('location')" (onChange)="profile.colors.locationTitle = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'MAPS.address' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.address" (click)="pickerAddress= true"> {{profile.colors.address}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerAddress" slot="end" name="close" color="primary" (click)="pickerAddress = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontAddress else pickerFontAddressTemplate">
+                                    <ion-icon (click)="fontpickerAddress.click()" (click)="pickerFontAddress = true" src="../../../assets/icons/font-solid.svg" style="cursor: pointer;" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontAddressTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontpickerAddress.click()" (click)="pickerFontAddress = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontpickerAddress (fontPickerChange)="changeFont('address', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_address" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerAddress" [color]="profile.colors.address || 'black'" (onChangeComplete)="setTheme('address')" (onChange)="profile.colors.address = $event.color.hex"></color-sketch>
+                        </ng-container>
+
+                    </ion-card>
+
+                </ion-col>
+
+                <!-- Template preview -->
+                <ion-col size="5">
+                    <div class="smartphone">
+                        <div class="content background">
+                            <!-- Navigate button -->
+                            <ion-item lines="none" (click)="goMaps()">
+                                <ion-icon slot="end" size="large" name="navigate-circle" class="navigate" style="cursor: pointer;"></ion-icon>
+                            </ion-item>
+                            <!-- Título y dirección -->
+                            <ion-item lines="none" style="text-align: center">
+                                <ion-label class="ion-text-wrap">
+                                    <h1 class="location">{{'MAPS.location' | translate}}</h1>
+                                </ion-label>
+                            </ion-item>
+                            <app-separador-estrella [src]="'location'"></app-separador-estrella>
+                            <ion-item lines="none" style="text-align: center;">
+                                <ion-label class="ion-text-wrap">
+                                    <h2 class="address">{{profile.address.address}}</h2>
+                                </ion-label>
+                            </ion-item>
+                            <!-- Mapa -->
+                            <div [style.display]="mapReady ? 'initial' : 'none'">
+                                <agm-map style="height: 50vh" [latitude]="profile.address.lat" [longitude]="profile.address.lng" [streetViewControl]="false" [zoom]=15 (mapReady)="mapLoaded($event)">
+                                    <agm-marker [markerDraggable]="true" (dragEnd)="saveLocation($event)" [iconUrl]='{"url": icon,"scaledSize": {"height": 75, "width": 50}}' [latitude]="profile.address.lat" [longitude]="profile.address.lng" [animation]="'DROP'"></agm-marker>
+                                </agm-map>
+                            </div>
+                            <ion-item lines="none" *ngIf="!mapReady">
+                                <ion-spinner style="margin: auto;" name="dots"></ion-spinner>
+                            </ion-item>
+                        </div>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ng-container>
+</ion-content>

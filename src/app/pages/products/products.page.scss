@@ -1,0 +1,58 @@
+.smartphone {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height: 85vh;
+    margin: auto;
+    border: 16px black solid;
+    border-top-width: 15px;
+    border-bottom-width: 15px;
+    border-radius: 36px;
+    overflow: hidden;
+}
+
+.smartphone .content {
+    width: 100%;
+    height: 85vh;
+    overflow-y: scroll;
+}
+
+ion-icon {
+    cursor: pointer;
+}
+
+.colorPicker {
+    width: 25%;
+    height: 30px;
+    border: 1px grey solid;
+    cursor: pointer;
+}
+
+input {
+    border-radius: 500px;
+    border: 1px rgb(143, 142, 142) solid;
+    padding: 0.5rem;
+    z-index: 30;
+}
+
+ion-segment-button {
+    width: 100%;
+}
+
+.topleft {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 18pt;
+    opacity: 0.75;
+    border-radius: 100%;
+}
+
+.refill {
+    width: 100vw;
+    height: 3rem;
+    border-radius: 25px 25px 0 0;
+    margin-top: -3rem;
+    z-index: 20;
+    position: absolute;
+}

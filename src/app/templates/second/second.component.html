@@ -1,0 +1,43 @@
+<!-- Profile photo -->
+<div style="height: 2.5rem;"></div>
+<ion-img [src]="profile.photo" class="border_photo" (ionImgWillLoad)="ionImgWillLoad($event)"></ion-img>
+
+<!-- Data -->
+<ion-item lines="none" style="text-align: center; margin-top: 1rem;">
+    <ion-label>
+        <h1 class="ion-text-wrap name">{{profile?.name || 'LOGIN.name' | translate}}</h1>
+        <p class="ion-text-wrap employment">{{profile?.employment || 'PROFILE.employment' | translate}}</p>
+        <p class="ion-text-wrap employment" *ngIf="profile?.web" (click)="goPage(profile?.web)">{{profile?.web}}</p>
+    </ion-label>
+</ion-item>
+
+<!-- Icon buttons -->
+
+<ion-item lines="none" style="text-align: center; margin: 0.75rem 0 0 0;">
+    <ion-label>
+        <h2 class="ion-text-wrap" class="follow">{{'PROFILE.followMe' | translate}}</h2>
+    </ion-label>
+</ion-item>
+<app-separador-estrella [src]="'follow'"></app-separador-estrella>
+<ion-grid>
+    <ion-row>
+        <ion-col>
+            <div style="text-align: center;">
+                <ion-button *ngFor="let item of profile?.social_net" (click)="goPage(item.page)" fill="clear" slot="start">
+                    <ion-icon slot="icon-only" size="small" [name]="item.icon" class="icons"></ion-icon>
+                </ion-button>
+            </div>
+        </ion-col>
+    </ion-row>
+</ion-grid>
+
+<!-- Contact -->
+<ion-grid class="ion-padding">
+    <ion-row>
+        <ion-col size="6" *ngFor="let item of profile?.contact" style="height: 6rem;">
+            <div class="btn_frame buttons_second" (click)="emit(item.action)">
+                <ion-icon [name]="item.icon" class="centered" style="font-size: xx-large;"></ion-icon>
+            </div>
+        </ion-col>
+    </ion-row>
+</ion-grid>

@@ -1,0 +1,34 @@
+<div class="background_third">
+    <img [src]="profile?.vertical_cover || noImage" style="object-fit: cover; height: 100%;">
+</div>
+<div class="footer background">
+    <ion-item lines="none" style="text-align: center">
+        <ion-label>
+            <h1 class="ion-text-wrap name">{{profile?.name || 'LOGIN.name' | translate}}</h1>
+            <p class="ion-text-wrap employment">{{profile?.employment || 'PROFILE.employment' | translate}}</p>
+            <p class="ion-text-wrap employment" *ngIf="profile?.web" (click)="goPage(profile?.web)">{{profile?.web}}</p>
+        </ion-label>
+    </ion-item>
+</div>
+
+<ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button class="buttons">
+        <ion-icon src="../../../assets/icons/headset-solid.svg"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="bottom">
+        <ion-fab-button class="buttons" *ngFor="let item of profile?.contact">
+            <ion-icon [name]="item.icon"></ion-icon>
+        </ion-fab-button>
+    </ion-fab-list>
+</ion-fab>
+
+<ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button class="buttons">
+        <ion-icon src="../../../assets/icons/users-solid.svg"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="bottom">
+        <ion-fab-button class="buttons" *ngFor="let item of profile?.social_net">
+            <ion-icon [name]="item.icon"></ion-icon>
+        </ion-fab-button>
+    </ion-fab-list>
+</ion-fab>

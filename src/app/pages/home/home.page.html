@@ -1,0 +1,292 @@
+<ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+        <ion-title>
+            {{'MENU.home' | translate}}
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <ng-container *ngIf="profileReady">
+        <ion-grid fixed>
+            <ion-row>
+                <!-- Form -->
+                <ion-col size="6" class="separate-scroll">
+
+                    <!-- Template -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PROFILE.template' | translate}}</ion-label>
+                            <ion-select [(ngModel)]="profile.template" color="medium" okText="{{'COMMON.ok' | translate}}" cancelText="{{'COMMON.cancel' | translate}}" (ionChange)="saveTemplate()">
+                                <ion-select-option value="first">{{'PROFILE.first' | translate}}</ion-select-option>
+                                <ion-select-option value="second">{{'PROFILE.second' | translate}}</ion-select-option>
+                                <ion-select-option value="third">{{'PROFILE.third' | translate}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-card>
+
+                    <!-- Theme -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PROFILE.theme' | translate}}</ion-label>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="showTheme === false" (click)="showTheme = true" style="cursor: pointer;"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="showTheme === true" (click)="showTheme = false" style="cursor: pointer;"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="showTheme">
+
+                            <!-- Primary color -->
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.primary' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.fillButtons" (click)="pickerBorders= true"> {{profile.colors.fillButtons}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerBorders" slot="end" name="close" color="primary" (click)="pickerBorders = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerBorders" [color]="profile.colors.fillButtons || 'black'" (onChangeComplete)="setPrimary($event.color)" (onChange)="profile.colors.fillButtons = $event.color.hex"></color-sketch>
+
+                            <!-- Font -->
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.font' | translate}}</ion-label>
+                                <ng-container *ngIf="!pickerFont else pickerFontTemplate">
+                                    <ion-icon (click)="opendDialog('main')" style="cursor: pointer;" slot="end" src="../../../assets/icons/font-solid.svg" (click)="fontPicker.click()" (click)="pickerFont = true"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontPicker.click()" (click)="pickerFont = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div (fontPickerChange)="mainFontChange($event)" [fpSizeSelect]="false" [(fontPicker)]="profile.font" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;" #fontPicker id="fontPicker">
+                            </div>
+
+                            <!-- Background -->
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.background' | translate}}
+                                </ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.background" (click)="pickerBack = true"> {{profile.colors.background}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerBack" slot="end" name="close" color="primary" (click)="pickerBack = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerBack" [color]="profile.colors.background || 'white'" (onChangeComplete)="setBackground()" (onChange)="profile.colors.background = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.gradient' | translate}}
+                                </ion-label>
+                                <div class="colorPicker" style="margin-left: 0.5rem;" [style.background]="profile.colors.backgroundGradient" (click)="pickerBackGradient = true" *ngIf="profile.colors.background"> {{profile.colors.backgroundGradient}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerBackGradient" slot="end" name="close" color="primary" (click)="pickerBackGradient = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerBackGradient" [color]="profile.colors.backgroundGradient || 'white'" (onChangeComplete)="setBackground()" (onChange)="profile.colors.backgroundGradient = $event.color.hex"></color-sketch>
+                            <ion-item *ngIf="profile.colors.backgroundGradient">
+                                <ion-label color="medium">{{'PROFILE.direction' | translate}}
+                                </ion-label>
+                                <ion-icon slot="end" name="arrow-back" (click)="setDirection('to left')" style="cursor: pointer;"></ion-icon>
+                                <ion-icon slot="end" name="arrow-forward" (click)="setDirection('to bottom left')" style="transform:rotate(135deg); cursor: pointer;"></ion-icon>
+                                <ion-icon slot="end" name="arrow-down" (click)="setDirection('to bottom')" style="cursor: pointer;"></ion-icon>
+                                <ion-icon slot="end" name="arrow-forward" (click)="setDirection('to bottom right')" style="transform:rotate(45deg); cursor: pointer;"></ion-icon>
+                                <ion-icon slot="end" name="arrow-forward" (click)="setDirection('to right')" style="cursor: pointer;"></ion-icon>
+                                <ion-icon slot="end" name="arrow-forward" (click)="setDirection('to top right')" style="transform:rotate(-45deg); cursor: pointer;"></ion-icon>
+                                <ion-icon slot="end" name="arrow-up" (click)="setDirection('to top')" style="cursor: pointer;"></ion-icon>
+                                <ion-icon slot="end" name="arrow-forward" (click)="setDirection('to top left')" style="transform:rotate(-135deg); cursor: pointer;"></ion-icon>
+                            </ion-item>
+                        </ng-container>
+                    </ion-card>
+
+                    <!-- Cover & Photo images -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PROFILE.images' | translate}}</ion-label>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="showImages === false" (click)="showImages = true" style="cursor: pointer;"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="showImages === true" (click)="showImages = false" style="cursor: pointer;"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="showImages">
+                            <ion-item *ngIf="profile.template === 'third'">
+                                <ion-label color="medium">{{'PROFILE.cover' | translate}}</ion-label>
+                                <ion-button (click)="vertical_cover.click()" expand="block" shape="round">
+                                    {{'COMMON.search' | translate}}
+                                </ion-button>
+                                <input style="display: none" (change)="cropImage($event, 1/2, 'vertical_cover', true)" type="file" #vertical_cover>
+                            </ion-item>
+                            <ion-item *ngIf="profile.template === 'first'">
+                                <ion-label color="medium">{{'PROFILE.cover' | translate}}</ion-label>
+                                <ion-button (click)="cover.click()" expand="block" shape="round">
+                                    {{'COMMON.search' | translate}}
+                                </ion-button>
+                                <input style="display: none" (change)="cropImage($event, 1/0.5, 'cover', true)" type="file" #cover>
+                            </ion-item>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.photo' | translate}}</ion-label>
+                                <ion-button (click)="photo.click()" expand="block" shape="round">
+                                    {{'COMMON.search' | translate}}
+                                </ion-button>
+                                <input style="display: none" (change)="cropImage($event, 1/1, 'profile', true)" type="file" #photo>
+                            </ion-item>
+                        </ng-container>
+
+                    </ion-card>
+
+
+                    <!-- Data name, employment -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PROFILE.aboutYou' | translate}}</ion-label>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="showAbout === false" (click)="showAbout = true" style="cursor: pointer;"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="showAbout === true" (click)="showAbout = false" style="cursor: pointer;"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="showAbout">
+                            <ion-item>
+                                <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.name" placeholder="{{'LOGIN.name' | translate}}"></ion-input>
+                                <div class="colorPicker" [style.background]="profile.colors.name" (click)="pickerName= true"> {{profile.colors.name}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerName" slot="end" name="close" color="primary" (click)="pickerName = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontName else pickerFontNameTemplate">
+                                    <ion-icon (click)="opendDialog('name')" (click)="fontPickerName.click()" (click)="pickerFontName = true" src="../../../assets/icons/font-solid.svg" style="cursor: pointer;" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontNameTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontPickerName.click()" (click)="pickerFontName = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontPickerName id="fontPickerName" (fontPickerChange)="changeFont('name', $event, fontPickerName)" [fpSizeSelect]="false" [(fontPicker)]="font_name" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerName" [color]="profile.colors.name || 'black'" (onChangeComplete)="setTheme('name')" (onChange)="profile.colors.name = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.employment" placeholder="{{'PROFILE.employment' | translate}}"></ion-input>
+                                <div class="colorPicker" [style.background]="profile.colors.employment" (click)="pickerEmployment= true"> {{profile.colors.employment}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerEmployment" slot="end" name="close" color="primary" (click)="pickerEmployment = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontEmployment else pickerFontEmploymentTemplate">
+                                    <ion-icon (click)="opendDialog('puesto')" (click)="fontPickerEmployment.click()" (click)="pickerFontEmployment = true" src="../../../assets/icons/font-solid.svg" style="cursor: pointer;" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontEmploymentTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontPickerEmployment.click()" (click)="pickerFontEmployment = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontPickerEmployment id="fontPickerEmployment" (fontPickerChange)="changeFont('emplyment', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_emplyment" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerEmployment" [color]="profile.colors.employment || 'grey'" (onChangeComplete)="setTheme('employment')" (onChange)="profile.colors.employment = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.web" placeholder="{{'PROFILE.web' | translate}}"></ion-input>
+                            </ion-item>
+                        </ng-container>
+
+                    </ion-card>
+
+                    <!-- Contact -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PROFILE.contact' | translate}}</ion-label>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="showContact === false" (click)="showContact = true" style="cursor: pointer;"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="showContact === true" (click)="showContact = false" style="cursor: pointer;"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="showContact">
+                            <ion-item lines="inset">
+                                <ion-icon slot="start" name="call" class="grey"></ion-icon>
+                                <ion-label color="medium">{{'LOGIN.phone' | translate}}</ion-label>
+                                <ion-input (ionBlur)="save()" type="tel" (ionChange)="phoneChange($event, 'phone')" [value]="profile.phone" placeholder="{{'PROFILE.digits' | translate}}"></ion-input>
+                            </ion-item>
+                            <ion-item lines="inset">
+                                <ion-icon slot="start" name="logo-whatsapp" class="grey"></ion-icon>
+                                <ion-label color="medium">{{'PROFILE.whats' | translate}}</ion-label>
+                                <ion-input (ionBlur)="save()" type="tel" (ionChange)="phoneChange($event, 'whatsApp')" [value]="profile.whatsApp" placeholder="{{'PROFILE.digits' | translate}}"></ion-input>
+                            </ion-item>
+                            <ion-item lines="inset">
+                                <ion-icon slot="start" name="mail" class="grey"></ion-icon>
+                                <ion-label color="medium">{{'LOGIN.email_label' | translate}}</ion-label>
+                                <ion-input (ionBlur)="emailChange($event)" type="email" [(ngModel)]="profile.email"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-icon slot="start" name="person-add" class="grey"></ion-icon>
+                                <ion-label color="medium">{{'PROFILE.addContact' | translate}}</ion-label>
+                                <ion-checkbox slot="end" [(ngModel)]="profile.addContact" (ionChange)="addPersonChange($event)"></ion-checkbox>
+                            </ion-item>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.font' | translate}}</ion-label>
+                                <ng-container *ngIf="!pickerFontContact else pickerFontContactTemplate">
+                                    <ion-icon (click)="opendDialog('contacto')" style="cursor: pointer;" slot="end" src="../../../assets/icons/font-solid.svg" (click)="fontPickerContact.click()" (click)="pickerFontContact = true"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontContactTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontPickerContact.click()" (click)="pickerFontContact = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div (fontPickerChange)="changeFont('contactLabel', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_contactLabel" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;" #fontPickerContact id="fontPickerContact">
+                            </div>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.titleColor' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.contactTitle" (click)="pickerTitleContact= true"> {{profile.colors.contactTitle}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerTitleContact" slot="end" name="close" color="primary" (click)="pickerTitleContact = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerTitleContact" [color]="profile.colors.contactTitle || 'black'" (onChangeComplete)="setTheme('contact')" (onChange)="profile.colors.contactTitle = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.buttonsColor' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.fillButtons" (click)="pickerButtons= true"> {{profile.colors.fillButtons}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerButtons" slot="end" name="close" color="primary" (click)="pickerButtons = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerButtons" [color]="profile.colors.fillButtons || 'black'" (onChangeComplete)="setTheme('fillButtons')" (onChange)="profile.colors.fillButtons = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.textFabColor' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.textButtons" (click)="pickerButtonsText= true"> {{profile.colors.textButtons}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerButtonsText" slot="end" name="close" color="primary" (click)="pickerButtonsText = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerButtonsText" [color]="profile.colors.textButtons || 'white'" (onChangeComplete)="setTheme('textButtons')" (onChange)="profile.colors.textButtons = $event.color.hex"></color-sketch>
+                        </ng-container>
+                    </ion-card>
+
+
+                    <!-- Social -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">{{'PROFILE.social' | translate}}</ion-label>
+                            <ion-icon slot="end" name="chevron-down" color="primary" *ngIf="showSocial === false" (click)="showSocial = true" style="cursor: pointer;"></ion-icon>
+                            <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="showSocial === true" (click)="showSocial = false" style="cursor: pointer;"></ion-icon>
+                        </ion-item>
+                        <ng-container *ngIf="showSocial">
+                            <ion-item *ngFor="let item of social; let i = index">
+                                <ion-icon slot="start" [name]="item.icon" class="grey"></ion-icon>
+                                <ion-input (ionBlur)="save()" type="text" [(ngModel)]="item.value" placeholder="{{item.title}}"></ion-input>
+                                <ion-button (click)="socialChange(i)" slot="end" shape="round">
+                                    {{'COMMON.add' | translate}}
+                                </ion-button>
+                            </ion-item>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.font' | translate}}</ion-label>
+                                <ng-container *ngIf="!pickerFontFollow else pickerFontFollowTemplate">
+                                    <ion-icon (click)="opendDialog('follow')" style="cursor: pointer;" slot="end" src="../../../assets/icons/font-solid.svg" (click)="fontPickerFollow.click()" (click)="pickerFontFollow = true"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontFollowTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontPickerFollow.click()" (click)="pickerFontFollow = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div (fontPickerChange)="changeFont('follow', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_follow" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;" #fontPickerFollow id="fontPickerFollow">
+                            </div>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.titleColor' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.followTitle" (click)="pickerTitleSocial= true"> {{profile.colors.followTitle}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerTitleSocial" slot="end" name="close" color="primary" (click)="pickerTitleSocial = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerTitleSocial" [color]="profile.colors.followTitle || 'black'" (onChangeComplete)="setTheme('follow')" (onChange)="profile.colors.followTitle = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">{{'PROFILE.iconText' | translate}}</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.iconsText" (click)="pickerIconText= true"> {{profile.colors.iconsText}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerIconText" slot="end" name="close" color="primary" (click)="pickerIconText = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerIconText" [color]="profile.colors.iconsText || 'black'" (onChangeComplete)="setTheme('icons')" (onChange)="profile.colors.iconsText = $event.color.hex"></color-sketch>
+                        </ng-container>
+                    </ion-card>
+                </ion-col>
+
+                <!-- Template preview -->
+                <ion-col size="6">
+                    <div class="smartphone">
+                        <div class="content background">
+                            <div [ngSwitch]="profile.template">
+                                <div *ngSwitchCase="'first'">
+                                    <app-first [profile]="profile"></app-first>
+                                </div>
+                                <div *ngSwitchCase="'second'">
+                                    <app-second [profile]="profile"></app-second>
+                                </div>
+                                <div *ngSwitchCase="'third'">
+                                    <app-third [profile]="profile"></app-third>
+                                </div>
+                                <div *ngSwitchDefault>
+                                    <app-first [profile]="profile"></app-first>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ng-container>
+</ion-content>

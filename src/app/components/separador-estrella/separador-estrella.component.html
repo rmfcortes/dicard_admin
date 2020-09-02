@@ -1,0 +1,13 @@
+<ion-grid class="ion-no-padding">
+    <ion-row style="text-align: center;">
+        <ion-col size="5" class="ion-align-self-center">
+            <div [ngClass]="{'border-contact': src === 'contact', 'border-follow': src === 'follow', 'border-location': src === 'location'}" style="width: 60%; float: right;"></div>
+        </ion-col>
+        <ion-col size="2" class="ion-align-self-center">
+            <ion-icon [ngClass]="{'contact': src === 'contact', 'follow': src === 'follow', 'location': src === 'location'}" name="star"></ion-icon>
+        </ion-col>
+        <ion-col size="5" class="ion-align-self-center">
+            <div [ngClass]="{'border-contact': src === 'contact', 'border-follow': src === 'follow', 'border-location': src === 'location'}" style="width: 60%; float: left;"></div>
+        </ion-col>
+    </ion-row>
+</ion-grid>

@@ -1,0 +1,139 @@
+{
+    "LOGIN": {
+        "title": "Bienvenido",
+        "subtitle": "Queremos ser parte de tu equipo",
+        "email_label": "Correo electrónico",
+        "password_label": "Contraseña",
+        "persistent": "Recuerda mis datos",
+        "forgot_password": "¿Olvidaste tu contraseña?",
+        "login": "Iniciar sesión",
+        "no_acount": "¿No tienes cuenta?",
+        "create": "Regístrate",
+        "title_signup": "Crea tu cuenta",
+        "name": "Nombre(s)",
+        "last_name": "Apellido(s)",
+        "phone": "Teléfono móvil",
+        "confirm": "Comfirmar contraseña",
+        "sign_up": "Regístrate",
+        "already": "¿Ya tienes cuenta?",
+        "email_req": "Es necesario agregar un correo electrónico",
+        "email_pattern": "Dirección de correo electrónico inválida",
+        "password_required": "Ingrese una contraseña",
+        "password_min": "La contraseña debe incluir al menos 6 caracteres",
+        "auth_err_invalid": "Dirección de correo electrónico inválida",
+        "auth_err_disabled": "Este usuario ha sido deshabilitado",
+        "auth_err_not_found": "No existe una cuenta asociada a este correo electrónico",
+        "auth_err_wrong_password": "Contraseña incorrecta",
+        "err": "Lo sentimos, hubo un error",
+        "sign_up_email_taken": "Ya existe una cuenta asociada a este correo electrónico",
+        "required": "Este campo es requerido",
+        "passwordNotMatch": "Las constraseñas deben ser iguales",
+        "email_send": "Hemos enviado un correo electrónico a la dirección ingresada para que puedas resetear tu contraseña",
+        "phone_length": "El teléfono debe ser de 10 dígitos",
+        "phone_pattern": "Ingresa sólo números"
+
+
+
+
+
+
+    },
+
+    "MENU": {
+        "home": "Inicio",
+        "maps": "Mapa",
+        "products": "Productos",
+        "logOut": "Cerrar sesión",
+        "pendingChanges": "Tienes cambios pendientes por guardar. ¿Quieres salir sin guardar?"
+    },
+
+    "PROFILE": {
+        "template": "Plantilla",
+        "first": "Primera",
+        "second": "Segunda",
+        "third": "Tercera",
+        "background": "Fondo",
+        "gradient": "Degradado",
+        "direction": "Dirección",
+        "primary": "Color principal",
+        "font": "Tipografía",
+        "employment": "Puesto",
+        "web": "Página web",
+        "cover": "Portada",
+        "photo": "Perfil",
+        "contact": "Contacto",
+        "followMe": "Sígueme",
+        "whats": "WhatsApp",
+        "addContact": "Agregar a contactos",
+        "digits": "Al menos 10 dígitos",
+        "buttonsColor": "Color de fondo",
+        "titleColor": "Color del título",
+        "textFabColor": "Color de texto",
+        "theme": "Tema",
+        "images": "Imágenes",
+        "aboutYou": "Acerca de ti",
+        "social": "Redes sociales",
+        "iconText": "Color de iconos"
+
+
+    },
+
+    "COMMON": {
+        "save": "Guardar",
+        "preview": "Vista previa",
+        "search": "Buscar",
+        "add": "Agregar",
+        "cancel": "Cancelar",
+        "ok": "Aceptar",
+        "colors": "Colores",
+        "saveSuccess": "Los cambios han sido guardados",
+        "noMore": "No hay más resultados",
+        "more": "Ver más",
+        "error": "Error",
+        "someWrong": "Lo sentimos, algo salió mal, por favor intenta de nuevo",
+        "delete": "Eliminar",
+        "sure": "¿Estás seguro de eliminar este producto? se perderá toda la información referente al mismo de manera permanente",
+        "sureSection": "¿Estás seguro de eliminar esta sección? Todos los productos relacionados con esta sección serán eliminados también",
+        "changeColor": "Cambiar color"
+
+    },
+
+
+    "MAPS": {
+        "location": "Ubicación",
+        "address": "Dirección",
+        "navigate_icon": "Icono de navegación",
+        "tip": "Si la ubicación del pin no es exacta. Puedes arrastrar el pin a la posición deseada",
+        "pin": "Pin personalizado (formato png)",
+        "pngFile": "Por favor seleccione una imagen con formato png",
+        "poi": "Ocultar información de otros negocios en el mapa",
+        "dark": "Mostrar mapa en modo oscuro"
+    },
+
+    "PRODUCTS": {
+        "all": "Todos",
+        "sections": "Pasillos",
+        "section": "Pasillo",
+        "newSection": "Nuevo Pasillo",
+        "products": "Productos",
+        "view": "Vista",
+        "list": "Lista",
+        "list-img": "Lista con imágenes",
+        "cards": "Tarjetas",
+        "blocks": "Tarjetas pequeñas",
+        "gallery": "Galería",
+        "price": "Precio",
+        "code": "Código (opcional)",
+        "description": "Descripción",
+        "deleted": "Producto eliminado",
+        "deletedSection": "Pasillo eliminado",
+        "colorName": "Nombre",
+        "header": "Pestaña",
+        "headerSelected": "Pestaña seleccionada",
+        "backgroundCard": "Fondo de tarjeta"
+
+
+
+
+    }
+}

@@ -89,9 +89,7 @@ export class ProductsPage implements OnInit {
 
   showSectionInput() {
     this.viewSectionInput = true
-    setTimeout(() => {
-      this.inputSection.setFocus()
-    }, 300)
+    setTimeout(() => this.inputSection.setFocus(), 300)
   }
 
   setTheme(src: string) {
@@ -203,37 +201,38 @@ export class ProductsPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: ProductModal,
       componentProps: {product, sections: this.sections}
-    });
+    })
 
     modal.onWillDismiss().then(resp => {
       if (resp.data) {
         if (resp.data === 'deleted') {
-          const i = this.sections.findIndex(p => p.name === product.section);
-          this.sections[i].products = this.sections[i].products.filter(r => r.id !== product.id);
+          const i = this.sections.findIndex(p => p.name === product.section)
+          this.sections[i].products = this.sections[i].products.filter(r => r.id !== product.id)
           this.translateService.get('PRODUCTS.deleted').subscribe(text => {
             this.alertService.presentToast('<ion-icon name="checkmark-circle" color="success"></ion-icon> ' + text)
           })
         } else {
           if (!isNew) {
-            const i = this.sections.findIndex(p => p.name === product.section);
-            const y = this.sections[i].products.findIndex(p => p.id === product.id);
-            this.sections[i].products[y] = product;
+            const i = this.sections.findIndex(p => p.name === product.section)
+            const y = this.sections[i].products.findIndex(p => p.id === product.id)
+            this.sections[i].products[y] = product
           } else {
-            this.newProduct(resp.data);
+            this.newProduct(resp.data)
           }
         }
       }
     });
-    return await modal.present();
+    return await modal.present()
   }
 
   newProduct(product: Product) {
-    const i = this.sections.findIndex(p => p.name === product.section);
+    const i = this.sections.findIndex(p => p.name === product.section)
     if (i >= 0) {
       if (!this.sections[i].products || this.sections[i].products.length === 0) this.sections[i].products = []
-      this.sections[i].products.unshift(product);
+      this.sections[i].products.unshift(product)
+      this.loadedProducts += 1
     } else {
-      console.log('Not found');
+      console.log('Not found')
     }
   }
 
@@ -284,83 +283,76 @@ export class ProductsPage implements OnInit {
   // Get and Load Products with Infinite Scroll
 
   initGetProds() {
-    this.infiniteCall = 1;
-    this.loadedProducts = 0;
-    this.loadingProds = true;
-    this.getProds();
+    this.infiniteCall = 1
+    this.loadedProducts = 0
+    this.loadingProds = true
+    this.ySection = 0
+    this.getProds()
   }
 
   async getProds(event?) {
     return new Promise(async (resolve, reject) => {
       const products = await this.productService
-      .getProducts(this.batch + 1, this.lastKey, this.sections[this.ySection].name);
-      this.changingSection = false;
+      .getProducts(this.batch + 1, this.lastKey, this.sections[this.ySection].name)
+      this.changingSection = false
       if (products && products.length > 0) {
-        this.lastKey = products[products.length - 1].id;
-        this.evaluateProducts(products, event);
+        this.lastKey = products[products.length - 1].id
+        this.evaluateProducts(products, event)
       } else if ( this.ySection + 1 < this.sections.length ) {
-        this.ySection++;
-        this.lastKey = null;
-        if (this.loadedProducts < this.batch * this.infiniteCall) {
-          this.getProds();
-        }
+        this.ySection++
+        this.lastKey = null
+        if (this.loadedProducts < this.batch * this.infiniteCall) this.getProds()
       } else {
-        this.noMore = true;
-        this.infoReady = true;
-        this.loadingProds = false;
+        this.noMore = true
+        this.infoReady = true
+        this.loadingProds = false
         this.alertService.dismissLoading()
-        if (event) { event.target.complete(); }
-        resolve();
+        if (event) event.target.complete()
+        resolve()
       }
-    });
+    })
   }
 
   async evaluateProducts(products, event?) {
     if (products.length === this.batch + 1) {
-      products.pop();
-      return await this.loadProducts(products, event);
+      products.pop()
+      return await this.loadProducts(products, event)
     } else if (products.length === this.batch && this.ySection + 1 < this.sections.length) {
-      return await this.nextSection(products, event);
+      return await this.nextSection(products, event)
     } else if (this.ySection + 1 >= this.sections.length) {
-      this.noMore = true;
-      if (event) { event.target.complete(); }
-      return await this.loadProducts(products, event);
+      this.noMore = true
+      if (event) event.target.complete()
+      return await this.loadProducts(products, event)
     }
     if (products.length < this.batch && this.ySection + 1 < this.sections.length) {
-      await this.nextSection(products, event);
-      if (this.loadedProducts < this.batch * this.infiniteCall) {
-        return this.getProds();
-      }
+      await this.nextSection(products, event)
+      if (this.loadedProducts < this.batch * this.infiniteCall) return this.getProds()
     } else {
-      this.loadProducts(products, event);
-      this.noMore = true;
+      this.loadProducts(products, event)
+      this.noMore = true
     }
   }
 
   async nextSection(products, event?) {
     return new Promise(async (resolve, reject) => {
-      await this.loadProducts(products, event);
-      this.ySection++;
-      this.lastKey = null;
-      resolve();
-    });
+      await this.loadProducts(products, event)
+      this.lastKey = null
+      this.ySection++
+      resolve()
+    })
   }
 
   async loadProducts(prods: Product[], event?) {
     return new Promise(async (resolve, reject) => {
-      this.loadedProducts += prods.length;
-      let products = this.sections[this.ySection].products;
-      if ( products && products.length > 0) {
-        this.sections[this.ySection].products = products.concat(prods);
-      } else {
-        this.sections[this.ySection].products = prods;
-      }
-      if (event) { event.target.complete(); }
-      resolve();
-      this.infoReady = true;
-      this.loadingProds = false;
+      this.loadedProducts += prods.length   
+      if (!this.sections[this.ySection].products) this.sections[this.ySection].products = []   
+      this.sections[this.ySection].products = this.sections[this.ySection].products.concat(prods)
+      if (event) event.target.complete()
+      resolve()
+      this.infoReady = true
+      this.loadingProds = false
       this.alertService.dismissLoading()
-    });
+    })
   }
 
   loadMoreProducts(event) {
@@ -385,45 +377,43 @@ export class ProductsPage implements OnInit {
 
   loadMoreSectionProducts(event) {
     if (this.changingSection) {
-      event.target.complete();
-      return;
+      event.target.complete()
+      return
     }
     if (this.noMore) {
-      event.target.disabled = true;
-      event.target.complete();
-      return;
+      event.target.disabled = true
+      event.target.complete()
+      return
     }
-    this.getSectionProducts(event);
+    this.getSectionProducts(event)
 
     // App logic to determine if all data is loaded
     // and disable the infinite scroll
-    if (this.noMore) {
-      event.target.disabled = true;
-    }
+    if (this.noMore) event.target.disabled = true
   }
 
   async getSectionProducts(event?) {
-    this.loadingProds = true;
+    this.loadingProds = true
     const products = await this.productService
-      .getProducts(this.batch + 1, this.lastKey, this.sectionSelected);
-    this.changingSection = false;
+      .getProducts(this.batch + 1, this.lastKey, this.sectionSelected)
+    this.changingSection = false
     if (products && products.length > 0) {
-      this.lastKey = products[products.length - 1].id;
-      this.loadSectionProducts(products, event);
+      this.lastKey = products[products.length - 1].id
+      this.loadSectionProducts(products, event)
     } else {
       if (event) event.target.complete()
-      this.loadingProds = false;
-      this.noMore = true;
+      this.loadingProds = false
+      this.noMore = true
     }
   }
 
   loadSectionProducts(products, event) {
-    this.loadedProducts += products.length;
+    this.loadedProducts += products.length
     if (products.length === this.batch + 1) {
-      this.lastKey = products[products.length - 1].id;
-      products.pop();
+      this.lastKey = products[products.length - 1].id
+      products.pop()
     } else {
-      this.noMore = true;
+      this.noMore = true
     }
     const i = this.sections.findIndex(p => p.name === this.sectionSelected)
     if (!this.sections[i].products || this.sections[i].products.length === 0) {
@@ -432,26 +422,21 @@ export class ProductsPage implements OnInit {
       this.sections[i].products = this.sections[i].products.concat(products)
     }
     if (event) event.target.complete()
-    this.loadingProds = false;
+    this.loadingProds = false
   }
 
   reset(section?) {
-    this.changingSection = true;
-    this.lastKey = '';
-    this.ySection = 0;
-    this.sections.forEach(p => {
-      p.products = []
-    })
-    this.loadedProducts = 0;
-    this.infiniteCall = 1;
-    this.noMore = false;
-    this.infiniteScroll.disabled = false;
-    this.sectionSelected = section;
-    if (!section) {
-      this.getProds();
-    } else {
-      this.getSectionProducts();
-    }
+    this.changingSection = true
+    this.lastKey = ''
+    this.ySection = 0
+    this.sections.forEach(p => p.products = [])
+    this.loadedProducts = 0
+    this.infiniteCall = 1
+    this.noMore = false
+    this.infiniteScroll.disabled = false
+    this.sectionSelected = section
+    if (!section) this.getProds()
+    else this.getSectionProducts()
   }
 
   // Simulate Modal Product

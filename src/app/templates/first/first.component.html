@@ -1,5 +1,5 @@
 <!-- Cover -->
-<div class="frame-cover">
+<div class="frame-cover shadow">
     <preload-image [ratio]="{w: 1, h: 0.5}" [src]="profile?.cover || noImage"></preload-image>
 </div>
 
@@ -33,6 +33,15 @@
                 <ion-fab vertical="top" horizontal="center" slot="fixed" (click)="emit(item.action)">
                     <ion-fab-button class="buttons">
                         <ion-icon [name]="item.icon"></ion-icon>
+                    </ion-fab-button>
+                </ion-fab>
+            </div>
+        </ion-col>
+        <ion-col>
+            <div>
+                <ion-fab vertical="top" horizontal="center" slot="fixed" (click)="emit('qr')">
+                    <ion-fab-button class="buttons">
+                        <ion-icon name="share-social"></ion-icon>
                     </ion-fab-button>
                 </ion-fab>
             </div>

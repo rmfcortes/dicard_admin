@@ -51,7 +51,8 @@ export class UidService {
     template: 'first',
     view: 'list-img',
     whatsApp: '',
-    social_net: []
+    social_net: [],
+    description: ''
   }
 
   profileEmpty = true

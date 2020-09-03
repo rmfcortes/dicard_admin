@@ -23,10 +23,10 @@ export class ProductsService {
     return new Promise(async(resolve, reject) => {      
       try {
         const uid = this.uidService.getUid()
-        sections.forEach(s => {
-          s.edit = null
-        })
-        await this.db.object(`principal/${uid}/sections`).set(sections)
+        sections.forEach((s, i) => s.edit = null)
+        const sectionDb: Section[] = sections.filter(s => s.name)
+        sectionDb.forEach(s => delete s.products)
+        await this.db.object(`principal/${uid}/sections`).set(sectionDb)
         resolve()
       } catch (error) {
         reject(error)
@@ -117,7 +117,7 @@ export class ProductsService {
       } catch (error) {
         reject(error)
       }
-    });
+    })
   }
 
   deleteProduct(product: Product) {

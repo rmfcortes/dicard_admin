@@ -28,7 +28,7 @@ export class MapsPage implements OnInit {
   profileReady = false
   mapReady = false
 
-  map: any;
+  map: any
 
   err: string
 

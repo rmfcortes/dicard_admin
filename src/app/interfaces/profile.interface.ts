@@ -19,6 +19,7 @@ export interface MainProfile {
     web?: string;
     social_net?: Social[];
     addContact?: boolean;
+    description: string;
 }
 
 export interface Fonts {

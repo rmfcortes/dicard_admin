@@ -43,7 +43,7 @@
                             </ion-button>
                         </ion-item>
                         <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false" *ngIf="viewSectionList">
-                            <ion-item *ngFor="let section of sections; let i = index">
+                            <ion-item *ngFor="let section of sections; let i = index; let odd = odd" [ngClass]="{'contraste': odd}" lines="none">
                                 <ng-container *ngIf="section.edit; else editTemplate">
                                     <ion-input [(ngModel)]="section.name" #inputSectionEdit></ion-input>
                                     <ion-reorder slot="end"></ion-reorder>
@@ -74,9 +74,9 @@
                                 <ion-list-header *ngIf="section.products && section.products.length > 0">
                                     <ion-label color="primary" style="font-size: 10px;">{{section.name}}</ion-label>
                                 </ion-list-header>
-                                <ion-item *ngFor="let product of section.products">
+                                <ion-item *ngFor="let product of section.products; let odd = odd" [ngClass]="{'contraste': odd}" lines="none" (click)="productForm(product)" detail class="resaltar">
                                     <ion-label>{{product.name}}</ion-label>
-                                    <ion-icon name="pencil" slot="end" color="primary" (click)="productForm(product)"></ion-icon>
+                                    <ion-badge color="dark" mode="ios" *ngIf="!product.stock">Agotado</ion-badge>
                                 </ion-item>
                             </ion-list>
                         </ng-container>
@@ -203,22 +203,22 @@
                                 <ng-container *ngIf="loadedProducts > 0">
                                     <div [ngSwitch]="profile.view">
                                         <div *ngSwitchCase="'list-img'">
-                                            <app-list-img [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-list-img>
+                                            <app-list-img [sections]="sections" [profile]="profile" (showProduct)="productForm($event)"></app-list-img>
                                         </div>
                                         <div *ngSwitchCase="'block'">
-                                            <app-block [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-block>
+                                            <app-block [sections]="sections" [profile]="profile" (showProduct)="productForm($event)"></app-block>
                                         </div>
                                         <div *ngSwitchCase="'cards'">
-                                            <app-cards [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-cards>
+                                            <app-cards [sections]="sections" [profile]="profile" (showProduct)="productForm($event)"></app-cards>
                                         </div>
                                         <div *ngSwitchCase="'list'">
-                                            <app-list [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-list>
+                                            <app-list [sections]="sections" [profile]="profile" (showProduct)="productForm($event)"></app-list>
                                         </div>
                                         <div *ngSwitchCase="'gallery'">
-                                            <app-gallery [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-gallery>
+                                            <app-gallery [sections]="sections" [profile]="profile" (showProduct)="productForm($event)"></app-gallery>
                                         </div>
                                         <div *ngSwitchDefault>
-                                            <app-list-img [sections]="sections" [profile]="profile" (showProduct)="showProduct($event)"></app-list-img>
+                                            <app-list-img [sections]="sections" [profile]="profile" (showProduct)="productForm($event)"></app-list-img>
                                         </div>
                                     </div>
                                 </ng-container>

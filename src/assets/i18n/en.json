@@ -38,6 +38,7 @@
         "maps": "Maps",
         "products": "Products",
         "logOut": "Logout",
+        "orders": "Orders",
         "pendingChanges": "You have pending changes to save. Do you want to leave without saving?"
     },
 

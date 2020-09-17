@@ -135,7 +135,7 @@ export class AlertService {
     })
   }
 
-  async presentAlertAction(titulo, msn, cancelButton, okButton) {
+  async presentAlertAction(titulo, msn, okButton, cancelButton) {
     return new Promise(async (resolve, reject) => {
       const alert = await this.alertController.create({
         header: titulo,

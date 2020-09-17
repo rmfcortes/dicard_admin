@@ -147,8 +147,8 @@ export class ProductModal implements OnInit {
       this.alertService.presentAlert('', 'Por favor completa todos los campos')
       return
     }
-    if (this.product.price && !/^[0-9]+$/.test(this.product.price.toString())) {
-      this.alertService.presentAlert('Precio inválido', 'El precio debe incluir sólo números enteros')
+    if (isNaN(this.product.price)) {
+      this.alertService.presentAlert('Precio inválido', 'El precio debe incluir sólo números reales')
       return
     }
     await this.alertService.presentLoading('Estamos guardando la información del producto. Este proceso puede tardar algunos minutos. Por favor no cierres ni actualices la página')

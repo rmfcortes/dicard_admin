@@ -1,0 +1,74 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Pedidos</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+    <ion-grid fixed>
+        <ion-row>
+            <ion-col size-lg="4" size-xl="4" size-xs="12" size-sm="12" size-md="12" class="separate-scroll" *ngIf="!hideMainCol || scrWidth >= 992">
+                <ion-list *ngIf="orders.length > 0">
+                    <ion-item lines="none" detail (click)="seeOrder(item)" *ngFor="let item of orders; trackBy: trackOrders" style="cursor: pointer;">
+                        <ion-label class="ion-text-wrap">
+                            <h2>{{(item.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</h2>
+                            <p>{{item.customer.direccion.address}}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+            <ion-col size-lg="8" size-xl="8" size-xs="12" size-sm="12" size-md="12" *ngIf="order">
+                <div>
+                    <!-- Resumen pedido y contacto -->
+                    <ion-card>
+                        <h3 class="titulo">Resumen</h3>
+                        <ion-item lines="none">
+                            <ion-label>
+                                <h2 class="medium"><strong style="color: black;">Entregar en:</strong> {{order.customer.direccion.address}}</h2>
+                                <h2 *ngIf="order.customer.telefono" class="medium"><strong style="color: black;">Teléfono:</strong> {{order.customer.telefono}}</h2>
+                            </ion-label>
+                        </ion-item>
+                        <ion-item lines="none">
+                            <ion-label>
+                                <h2 class="medium" *ngIf="order.payment.vendor === 'efectivo'"><strong style="color: black;">Forma pago:</strong>Efectivo</h2>
+                                <h2 class="medium" *ngIf="order.payment.vendor === 'terminal'"><strong style="color: black;">Forma pago:</strong>Terminal</h2>
+                                <h2 class="medium" *ngIf="order.payment.vendor !== 'efectivo' && order.payment.vendor !== 'terminal'"><strong style="color: black;">Forma pago:</strong>Pago en línea</h2>
+                                <h2 class="medium" *ngIf="order.comision"><strong style="color: black;">Comisión:</strong> {{order.comision | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
+                                <h2 class="medium"><strong style="color: black;">Envío:</strong> {{order.delivery_cost | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
+                                <h2 class="medium"><strong style="color: black;">Propina:</strong> {{order.tip | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
+                            </ion-label>
+                        </ion-item>
+                    </ion-card>
+
+                    <!-- Lista de productos -->
+                    <ion-card>
+                        <h3 class="titulo">Productos</h3>
+                        <ion-item *ngFor="let producto of order.products; let i = index; let odd = odd" [ngClass]="{'contraste': odd}" lines="none">
+                            <ion-badge color="dark" slot="start">{{producto.qty}}</ion-badge>
+                            <ion-thumbnail slot="start">
+                                <img [src]="producto.url">
+                            </ion-thumbnail>
+                            <ion-label>
+                                <h2 class="ion-text-wrap" style="font-weight: 700;">{{producto.name | titlecase}}
+                                    <ion-text color="medium">{{producto.price | currency:'CAD':'symbol-narrow':'1.0-2'}}</ion-text>
+                                </h2>
+                                <p>{{producto.comments | titlecase}}</p>
+                                <div *ngFor="let item of producto.extras">
+                                    <h4>+ {{item.header | titlecase}}</h4>
+                                    <p style="color: var(--ion-color-primary); margin-left: 0.5rem;" *ngFor="let com of item.products">{{com.name}}: {{com.price | currency:'CAD':'symbol-narrow':'1.0-2'}}</p>
+                                </div>
+                            </ion-label>
+                        </ion-item>
+                        <hr style="border-bottom: var(--ion-color-medium) 1px solid;">
+                        <ion-item style="text-align: right;" lines="none">
+                            <ion-label color="primary">
+                                <h2 style="font-weight: 700;">Total: {{order.total | currency:'CAD':'symbol-narrow':'1.0-2'}}</h2>
+                            </ion-label>
+                        </ion-item>
+                    </ion-card>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

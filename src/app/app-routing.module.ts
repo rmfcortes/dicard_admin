@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: 'home', loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule), canActivate: [AuthGuard]},
   { path: 'maps', loadChildren: () => import('./pages/maps/maps.module').then( m => m.MapsPageModule), canActivate: [AuthGuard]},
   { path: 'products', loadChildren: () => import('./pages/products/products.module').then( m => m.ProductsPageModule), canActivate: [AuthGuard]},
+  { path: 'orders', loadChildren: () => import('./pages/orders/orders.module').then( m => m.OrdersPageModule), canActivate: [AuthGuard] },
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)

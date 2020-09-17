@@ -130,7 +130,7 @@ export class ProductsPage implements OnInit {
     this.sections[i].edit = true
     setTimeout(() => {
       this.inputSectionEdit.setFocus()
-    }, 300);
+    }, 300)
   }
 
   saveEditSection() {

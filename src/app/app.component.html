@@ -15,6 +15,7 @@
                         <ion-label color="light">
                             {{p.title | translate}}
                         </ion-label>
+                        <ion-badge *ngIf="p.url === '/orders' && orders > 0" color="light" mode="ios">{{orders}}</ion-badge>
                     </ion-item>
                     <ion-item (click)="logOut()" style="cursor: pointer;">
                         <ion-icon color="primary" slot="start" name="log-out" color="light"></ion-icon>

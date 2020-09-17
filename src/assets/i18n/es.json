@@ -44,6 +44,7 @@
         "maps": "Mapa",
         "products": "Productos",
         "logOut": "Cerrar sesión",
+        "orders": "Pedidos",
         "pendingChanges": "Tienes cambios pendientes por guardar. ¿Quieres salir sin guardar?"
     },
 

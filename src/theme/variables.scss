@@ -246,3 +246,24 @@
 //         --color: white;
 //     }
 // }
+.separate-scroll {
+    height: 95vh;
+    overflow: auto;
+}
+
+.medium {
+    color: var(--ion-color-medium)
+}
+
+.contraste {
+    --background: #fdf2e8
+}
+
+.resaltar {
+    cursor: pointer;
+}
+
+.resaltar:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.10);
+    z-index: 250;
+}

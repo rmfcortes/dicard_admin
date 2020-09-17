@@ -6,7 +6,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 
 import { UidService } from './uid.service';
 
-import { Section, Product } from '../interfaces/products.interface';
+import { Section, Product, ExtraList } from '../interfaces/products.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class ProductsService {
   ) { }
 
   updateSections(sections: Section[]) {
-    return new Promise(async(resolve, reject) => {      
+    return new Promise(async (resolve, reject) => {
       try {
         const uid = this.uidService.getUid()
         sections.forEach((s, i) => s.edit = null)
@@ -34,7 +34,7 @@ export class ProductsService {
     })
   }
 
-  getSections(): Promise<Section[]>{
+  getSections(): Promise<Section[]> {
     return new Promise((resolve, reject) => {
       try {
         const uid = this.uidService.getUid()
@@ -58,7 +58,7 @@ export class ProductsService {
     this.db.object(`principal/${uid}/products/${section}`).remove()
   }
 
-  getProducts(batch, lastKey, section): Promise<Product[]>{
+  getProducts(batch, lastKey, section): Promise<Product[]> {
     return new Promise((resolve, reject) => {
       const uid = this.uidService.getUid()
       if (lastKey) {
@@ -74,6 +74,17 @@ export class ProductsService {
             resolve(products)
           })
       }
+    })
+  }
+
+  getExtras(idProducto: string): Promise<ExtraList[]> {
+    const uid = this.uidService.getUid()
+    return new Promise((resolve, reject) => {
+      const comSub = this.db.list(`principal/${uid}/extras/${idProducto}`).valueChanges()
+        .subscribe((extras: ExtraList[]) => {
+          comSub.unsubscribe()
+          resolve(extras)
+        })
     })
   }
 
@@ -108,10 +119,17 @@ export class ProductsService {
     this.db.object(`principal/${uid}/products/${oldSection}/${idProduct}`).remove()
   }
 
-  setProduct(product: Product) {
-    return new Promise(async (resolve, reject) => {      
+  setProduct(product: Product, extras: ExtraList[]) {
+    return new Promise(async (resolve, reject) => {
       try {
         const uid = this.uidService.getUid()
+        if (extras && extras.length > 0) {
+          extras.sort((a, b) => (a.required === b.required)? 0 : a.required? -1 : 1)
+          await this.db.object(`principal/${uid}/extras/${product.id}`).set(extras)
+          product.has_extras = true
+        } else {
+          product.has_extras = false
+        }
         await this.db.object(`principal/${uid}/products/${product.section}/${product.id}`).update(product)
         resolve()
       } catch (error) {
@@ -121,9 +139,9 @@ export class ProductsService {
   }
 
   deleteProduct(product: Product) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const uid = this.uidService.getUid()
-      try{
+      try {
         this.removePhoto(product.url)
         await this.db.object(`principal/${uid}/products/${product.section}/${product.id}`).remove()
         resolve()

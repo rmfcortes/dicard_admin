@@ -2,7 +2,7 @@
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-button (click)="close()">
-                <ion-icon slot="start" name="arrow-back" color="primary"></ion-icon>
+                <ion-icon slot="start" name="chevron-back" color="primary"></ion-icon>
             </ion-button>
         </ion-buttons>
         <ion-buttons slot="end" *ngIf="product.id">
@@ -26,26 +26,92 @@
         <form #form="ngForm" (submit)="save()">
             <ion-item>
                 <ion-label color="medium" position="floating">{{'LOGIN.name' | translate}}</ion-label>
-                <ion-input (keyup.enter)="$event.target.blur();" [(ngModel)]="product.name" type="text" name="name" required minlength="3"></ion-input>
+                <ion-input (ionChange)="formularioChange()" (keyup.enter)="$event.target.blur();" [(ngModel)]="product.name" type="text" name="name" required minlength="3"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label color="medium" position="floating">{{'PRODUCTS.price' | translate}}</ion-label>
-                <ion-input (keyup.enter)="$event.target.blur();" [(ngModel)]="product.price" type="number" name="price" required minlength="3"></ion-input>
+                <ion-input (ionChange)="formularioChange()" (keyup.enter)="$event.target.blur();" [(ngModel)]="product.price" type="number" name="price" required minlength="3"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label color="medium" position="floating">{{'PRODUCTS.code' | translate}}</ion-label>
-                <ion-input (keyup.enter)="$event.target.blur();" [(ngModel)]="product.code" type="text" name="code" minlength="3"></ion-input>
+                <ion-input (ionChange)="formularioChange()" (keyup.enter)="$event.target.blur();" [(ngModel)]="product.code" type="text" name="code" minlength="3"></ion-input>
             </ion-item>
+            <ion-radio-group name="stock" [(ngModel)]="product.stock" (ionChange)="formularioChange()">
+                <ion-list-header>
+                    <ion-label color="medium">Existencias</ion-label>
+                </ion-list-header>
+                <ion-item lines="none">
+                    <ion-label color="medium" *ngIf="!product.stock">En inventario</ion-label>
+                    <ion-label *ngIf="product.stock">En inventario</ion-label>
+                    <ion-radio slot="end" [value]="true"></ion-radio>
+                </ion-item>
+                <ion-item>
+                    <ion-label color="medium" *ngIf="product.stock">Temporalmente agotado</ion-label>
+                    <ion-label *ngIf="!product.stock">Temporalmente agotado</ion-label>
+                    <ion-radio slot="end" [value]="false"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
             <ion-item>
                 <ion-label color="medium" position="floating">{{'PRODUCTS.description' | translate}}</ion-label>
-                <ion-textarea autoGrow="true" (keyup.enter)="$event.target.blur();" [(ngModel)]="product.description" type="text" name="description" minlength="5"></ion-textarea>
+                <ion-textarea (ionChange)="formularioChange()" autoGrow="true" (keyup.enter)="$event.target.blur();" [(ngModel)]="product.description" type="text" name="description" minlength="5"></ion-textarea>
             </ion-item>
             <ion-item>
                 <ion-label color="medium">{{'PRODUCTS.section' | translate}}</ion-label>
-                <ion-select [disabled]="sections.length <= 0" [(ngModel)]="product.section" color="medium" okText="{{'COMMON.ok' | translate}}" cancelText="{{'COMMON.cancel' | translate}}" required name="section">
+                <ion-select (ionChange)="formularioChange()" [disabled]="sections.length <= 0" [(ngModel)]="product.section" color="medium" okText="{{'COMMON.ok' | translate}}" cancelText="{{'COMMON.cancel' | translate}}" required name="section">
                     <ion-select-option *ngFor="let item of sections" [value]="item.name">{{item.name | titlecase}}</ion-select-option>
                 </ion-select>
             </ion-item>
+            <ion-item>
+                <ion-label color="medium">Complementos</ion-label>
+                <ion-button (click)="newExtra()" size="small" class="gradient--">
+                    Nuevo complemento
+                    <ion-icon slot="end" name="add"></ion-icon>
+                </ion-button>
+            </ion-item>
+            <ion-card *ngFor="let item of extras; let i = index">
+                <ion-list>
+                    <ion-list-header>
+                        <h2 style="font-weight: 700;">{{item.header}}</h2>
+                        <ion-button fill="clear" slot="end" (click)="deleteExtraList(i)" size="small">
+                            <ion-icon name="trash" color="medium"></ion-icon>
+                        </ion-button>
+                    </ion-list-header>
+                    <ion-grid fixed class="escritorio">
+                        <ion-row>
+                            <ion-col size="6">
+                                <ion-item lines="none" class="contraste">
+                                    <ion-label>Obligatorio</ion-label>
+                                    <ion-checkbox slot="start" [(ngModel)]="item.required" name="{{i}}" (ionChange)="formularioChange()"></ion-checkbox>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-item lines="none" class="contraste">
+                                    <ion-label color="medium">Elegir máximo:</ion-label>
+                                    <ion-input (keyup.enter)="$event.target.blur();" [disabled]="saving" [(ngModel)]="item.qty" type="number" name="qty" required (ionChange)="formularioChange()"></ion-input>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                    <ion-item lines="none" class="contraste mobile">
+                        <ion-label>Obligatorio</ion-label>
+                        <ion-checkbox slot="start" [(ngModel)]="item.required" name="{{i}}" (ionChange)="formularioChange()"></ion-checkbox>
+                    </ion-item>
+                    <ion-item lines="none" class="contraste mobile">
+                        <ion-label color="medium">Elegir máximo:</ion-label>
+                        <ion-input (keyup.enter)="$event.target.blur();" [disabled]="saving" [(ngModel)]="item.qty" type="number" name="qty" required (ionChange)="formularioChange()"></ion-input>
+                    </ion-item>
+                    <ion-item *ngFor="let prods of item.products; let y = index">
+                        <ion-label color="medium">{{prods.name}}</ion-label>
+                        <ion-label color="medium">+{{prods.price | currency:'CAD':'symbol-narrow':'1.0-2'}}</ion-label>
+                        <ion-icon slot="end" name="trash" (click)="deleteExtraOption(i, y)"></ion-icon>
+                    </ion-item>
+                </ion-list>
+                <ion-item lines="none">
+                    <ion-button class="gradient--" (click)="addExtraOption(i)" slot="end">
+                        Agrega producto
+                    </ion-button>
+                </ion-item>
+            </ion-card>
             <ion-button class="btn-save" style="margin-top: 2rem" [disabled]="!form.valid || !product.url || !product.section || saving" expand="block" type="submit" shape="round">
                 {{'COMMON.save' | translate}}
                 <ion-spinner *ngIf="saving" name="dots"></ion-spinner>

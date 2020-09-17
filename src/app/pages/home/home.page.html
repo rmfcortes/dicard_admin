@@ -138,7 +138,7 @@
                                     <ion-icon slot="end" name="close" color="primary" (click)="fontPickerName.click()" (click)="pickerFontName = false" style="cursor: pointer"></ion-icon>
                                 </ng-template>
                             </ion-item>
-                            <div #fontPickerName id="fontPickerName" (fontPickerChange)="changeFont('name', $event, fontPickerName)" [fpSizeSelect]="false" [(fontPicker)]="font_name" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            <div #fontPickerName id="fontPickerName" (fontPickerChange)="changeFont('name', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_name" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;">
                             </div>
                             <color-sketch *ngIf="pickerName" [color]="profile.colors.name || 'black'" (onChangeComplete)="setTheme('name')" (onChange)="profile.colors.name = $event.color.hex"></color-sketch>
                             <ion-item>
@@ -183,7 +183,7 @@
                             <ion-item lines="inset">
                                 <ion-icon slot="start" name="mail" class="grey"></ion-icon>
                                 <ion-label color="medium">{{'LOGIN.email_label' | translate}}</ion-label>
-                                <ion-input (ionBlur)="emailChange($event)" type="email" [(ngModel)]="profile.email"></ion-input>
+                                <ion-input (ionBlur)="emailChange()" type="email" [(ngModel)]="profile.email"></ion-input>
                             </ion-item>
                             <ion-item>
                                 <ion-icon slot="start" name="person-add" class="grey"></ion-icon>

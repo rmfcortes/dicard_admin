@@ -75,7 +75,7 @@ export class LoginPage implements OnInit {
     this.authService.signInWithEmail(this.form.value)
     .then(() => {
       this.alertService.dismissLoading()
-      this.router.navigate(['home'])
+      this.router.navigate(['home'], {replaceUrl: true, skipLocationChange: true})
     })
     .catch((err) => {
       this.alertService.dismissLoading()
@@ -133,9 +133,9 @@ export class LoginPage implements OnInit {
   }
 
   password(formGroup: FormGroup) {
-    const { value: password } = formGroup.get('password');
-    const { value: password2 } = formGroup.get('password2');
-    return password === password2 ? null : { passwordNotMatch: true };
+    const { value: password } = formGroup.get('password')
+    const { value: password2 } = formGroup.get('password2')
+    return password === password2 ? null : { passwordNotMatch: true }
   }
 
 
@@ -149,11 +149,10 @@ export class LoginPage implements OnInit {
     this.formSignUp.controls.last_name.markAsTouched()
     if (!this.formSignUp.valid) return
     await this.alertService.presentLoading()
-    console.log(this.formSignUp.value);
     this.authService.createUserWithEmailAndPassword(this.formSignUp.value)
     .then(() => {
       this.alertService.dismissLoading()
-      this.router.navigate(['home'])
+      this.router.navigate(['home'], {replaceUrl: true, skipLocationChange: true})
     })
     .catch((err) => {
       this.alertService.dismissLoading()

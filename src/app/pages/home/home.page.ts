@@ -6,7 +6,6 @@ import { CropImageModal } from 'src/app/modals/crop-image/crop-image.modal';
 
 import { AlertService } from 'src/app/services/alert.service';
 import { ThemeService } from 'src/app/services/theme.service';
-import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 
 import { MainProfile, Colors } from 'src/app/interfaces/profile.interface';
@@ -91,20 +90,25 @@ export class HomePage implements OnInit {
   font_emplyment: null
   font_contactLabel: null
 
+  lastuid: string
+
   constructor(
     private menu: MenuController,
     private modalCtrl: ModalController,
     private alertService: AlertService,
     private themeService: ThemeService,
-    private authService: AuthService,
     private userService: UserService,
     private uidService: UidService,
   ) {}
 
   async ngOnInit() {
-    this.menu.enable(true)
+    this.lastuid = this.uidService.getUid()
     await this.alertService.presentLoading()
     this.getProfile()
+  }
+
+  ionViewWillEnter() {
+    this.menu.enable(true)
   }
 
   getProfile() {
@@ -145,7 +149,7 @@ export class HomePage implements OnInit {
 
   setBackground(value?: string) {
     if (!value) value = 'background'
-    if ( this.profile.colors.backgroundGradient){
+    if ( this.profile.colors.backgroundGradient) {
       this.profile.colors.backgroundGradientValue = `linear-gradient(${this.gradientDirection}, ${this.profile.colors.background} 0%, ${this.profile.colors.backgroundGradient} 100%)`
     }
     this.setTheme(value)
@@ -180,14 +184,14 @@ export class HomePage implements OnInit {
   }
 
   adjust(color, amount) {
-    return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+    return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2))
   }
 
   contrast(red, green, blue) {
-    var brightness;
+    let brightness
     brightness = (red * 299) + (green * 587) + (blue * 114);
     brightness = brightness / 255000;
-  
+
     // values range from 0 to 1
     // anything greater than 0.5 should be bright enough for dark text
     if (brightness >= 0.5) return 'black';
@@ -207,6 +211,11 @@ export class HomePage implements OnInit {
     const main = document.getElementById('fontPicker')
     main.click()
     this.pickerFont = false
+    const archivos = Object.entries(font.files)
+    archivos.forEach((file: any) => {
+      const url = file[1].slice(4)
+      font.files[file[0]] = 'https' + url
+    })
     await this.themeService.createFont(font)
     this.profile.font = {
       contactLabel: font,
@@ -229,25 +238,25 @@ export class HomePage implements OnInit {
       this.pickerFont = false
       main.click()
     }
-    
+
     if (this.pickerFontName && src !== 'name') {
       const name = document.getElementById('fontPickerName')
       this.pickerFontName = false
       name.click()
     }
-    
+
     if (this.pickerFontFollow && src !== 'follow') {
       const social = document.getElementById('fontPickerFollow')
       this.pickerFontFollow = false
       social.click()
     }
-    
+
     if (this.pickerFontContact && src !== 'contacto') {
       const contacto = document.getElementById('fontPickerContact')
       this.pickerFontContact = false
       contacto.click()
     }
-    
+
     if (this.pickerFontEmployment && src !== 'puesto') {
       const puesto = document.getElementById('fontPickerEmployment')
       this.pickerFontEmployment = false
@@ -256,6 +265,11 @@ export class HomePage implements OnInit {
   }
 
   async changeFont(src: string, font: Font) {
+    const archivos = Object.entries(font.files)
+    archivos.forEach((file: any) => {
+      const url = file[1].slice(4)
+      font.files[file[0]] = 'https' + url
+    })
     if (this.pickerFontName) {
       const name = document.getElementById('fontPickerName')
       this.pickerFontName = false
@@ -307,22 +321,21 @@ export class HomePage implements OnInit {
       component: CropImageModal,
       componentProps: {imageChangedEvent, aspect, maintainAspectRatio}
     })
-    modal.onWillDismiss().then(async(resp) => {
+    modal.onWillDismiss().then(async (resp) => {
       if (resp.data) {
         switch (src) {
-          case 'cover':            
+          case 'cover':
             this.profile.cover = resp.data
             this.profile.cover = await this.userService.uploadPhoto(resp.data.split('data:image/png;base64,')[1], 'cover')
             break
-          case 'profile':            
+          case 'profile':
             this.profile.photo = resp.data
             this.profile.photo = await this.userService.uploadPhoto(resp.data.split('data:image/png;base64,')[1], 'photo')
             break
-          case 'vertical_cover':            
+          case 'vertical_cover':
             this.profile.vertical_cover = resp.data
             this.profile.vertical_cover = await this.userService.uploadPhoto(resp.data.split('data:image/png;base64,')[1], 'vertical_cover')
             break
-        
         }
         this.userService.setProfile(this.profile)
       }
@@ -338,7 +351,7 @@ export class HomePage implements OnInit {
       if (origin === 'phone') {
         this.profile.phone = event.detail.value
         const i = this.profile.contact.findIndex(c => c.action === 'call')
-        if (i < 0) {          
+        if (i < 0) {
           this.profile.contact[this.profile.contact.length] = {
             action: 'call',
             icon: 'call',
@@ -347,7 +360,7 @@ export class HomePage implements OnInit {
       } else {
         this.profile.whatsApp = event.detail.value
         const i = this.profile.contact.findIndex(c => c.action === 'whats')
-        if (i < 0) {          
+        if (i < 0) {
           this.profile.contact[this.profile.contact.length] = {
             action: 'whats',
             icon: 'logo-whatsapp',
@@ -385,7 +398,7 @@ export class HomePage implements OnInit {
     if (event.detail.checked === true) {
       this.profile.addContact = true
       const i = this.profile.contact.findIndex(c => c.action === 'addContact')
-      if (i < 0) {        
+      if (i < 0) {
         this.profile.contact[this.profile.contact.length] = {
           action: 'addContact',
           icon: 'person-add',
@@ -420,13 +433,8 @@ export class HomePage implements OnInit {
   }
 
   reset() {
-    console.log(this.oldProfile);
     this.profile = JSON.parse(JSON.stringify(this.oldProfile))
 
-  }
-
-  logout() {
-    this.authService.logout()
   }
 
 }

@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "tarjetas-f3aef"
+  },
+  "targets": {
+    "tarjetas-f3aef": {
+      "hosting": {
+        "admin": [
+          "dicard-admin"
+        ]
+      }
+    }
+  }
+}

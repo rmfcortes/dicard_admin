@@ -40,7 +40,7 @@ export class AuthService {
           resolve(uid)
         } else {
           try {
-            if (localStorage.getItem('persistent')){
+            if (localStorage.getItem('persistent')) {
               await this.checkFireAuth()
               resolve(true)
             } else resolve(false)
@@ -95,19 +95,19 @@ export class AuthService {
           switch (error.code) {
             case 'auth/invalid-email':
              reject('LOGIN.auth_err_invalid')
-              break;
+             break
             case 'auth/user-disabled':
              reject('LOGIN.auth_err_disabled')
-              break;
+             break
             case 'auth/user-not-found':
              reject('LOGIN.auth_err_not_found')
-              break;
+             break
             case 'auth/wrong-password':
              reject('LOGIN.auth_err_wrong_password')
-              break;
+             break
             default:
              reject('LOGIN.err' + error)
-              break;
+             break
           }
         } else reject('LOGIN.err' + error)
       }
@@ -186,6 +186,8 @@ export class AuthService {
           localStorage.removeItem('persistent')
           this.uidService.setUid(null)
           this.uidService.setName(null)
+          this.uidService.clearProfile()
+          this.uidService.setProfileEmpty(true)
           resolve()
         }, 500)
       } catch (error) {

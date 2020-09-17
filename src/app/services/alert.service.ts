@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
+import { ok } from 'assert';
 
 @Injectable({
   providedIn: 'root'
@@ -68,10 +69,10 @@ export class AlertService {
     await alert.present()
   }
 
-  async presentAlertPrompt(titulo, placeholder) {
+  async presentAlertPrompt(header: string, placeholder: string, okText: string, cancelText: string) {
     return new Promise(async (resolve, reject) => {
       const alert = await this.alertController.create({
-        header: titulo,
+        header,
         inputs: [
           {
             name: 'name1',
@@ -81,16 +82,51 @@ export class AlertService {
         ],
         buttons: [
           {
-            text: 'Cancelar',
+            text: cancelText,
             role: 'cancel',
             cssClass: 'secondary',
             handler: () => {
               console.log('Confirm Cancel');
             }
           }, {
-            text: 'Ok',
+            text: okText,
             handler: (data) => {
               resolve(data.name1)
+            }
+          }
+        ]
+      })
+      await alert.present()
+    })
+  }
+
+  async presentPromptComplementos() {
+    return new Promise(async (resolve, reject) => {
+      const alert = await this.alertController.create({
+        header: 'Nuevo producto',
+        inputs: [
+          {
+            name: 'name',
+            type: 'text',
+            placeholder: 'Nombre'
+          },
+          {
+            name: 'price',
+            min: 0,
+            type: 'number',
+            placeholder: 'Precio extra'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            cssClass: 'secondary',
+          }, {
+            text: 'Agregar',
+            cssClass: 'btn_aceptar',
+            handler: (data) => {
+              resolve(data)
             }
           }
         ]
@@ -127,9 +163,10 @@ export class AlertService {
     })
   }
 
-  async presentLoading() {
+  async presentLoading(message?: string) {
     this.loader = await this.loadingCtrl.create({
-     spinner: 'dots'
+     spinner: 'dots',
+     message
     })
     return await this.loader.present()
   }

@@ -153,17 +153,15 @@ export class ProductsPage implements OnInit {
 
   async removeSection(i: number, section: string) {
     this.translateService.get(['COMMON.delete', 'COMMON.sureSection', 'COMMON.cancel', 'COMMON.ok']).subscribe(text => {
-      this.alertService.presentAlertAction(text["COMMON.delete"] + ' ' + section, text["COMMON.sureSection"], text["COMMON.cancel"], text["COMMON.ok"])
+      this.alertService.presentAlertAction(text['COMMON.delete'] + ' ' + section, text['COMMON.sureSection'], text['COMMON.cancel'], text['COMMON.ok'])
       .then(resp => {
         if (resp) {
-          this.sections.splice(i, 1);
-          this.sections.forEach((p, i) => {
-            p.priority = i + 1;
-          });
-          this.productService.updateSections(this.sections);
-          this.productService.removeSection(section);
-          this.translateService.get('PRODUCTS.deletedSection').subscribe(text => {
-            this.alertService.presentToast('<ion-icon name="checkmark-circle" color="success"></ion-icon> ' + text)
+          this.sections.splice(i, 1)
+          this.sections.forEach((p, iSec) => p.priority = iSec + 1)
+          this.productService.updateSections(this.sections)
+          this.productService.removeSection(section)
+          this.translateService.get('PRODUCTS.deletedSection').subscribe(textProds => {
+            this.alertService.presentToast('<ion-icon name="checkmark-circle" color="success"></ion-icon> ' + textProds)
           })
         }
       })
@@ -171,22 +169,18 @@ export class ProductsPage implements OnInit {
   }
 
   doReorder(event) {
-    const itemMove = this.sections.splice(event.detail.from, 1)[0];
-    this.sections.splice(event.detail.to, 0, itemMove);
-    this.sections.forEach((p, i) => {
-      p.priority = i + 1;
-    });
-    event.detail.complete();
-    this.productService.updateSections(this.sections);
+    const itemMove = this.sections.splice(event.detail.from, 1)[0]
+    this.sections.splice(event.detail.to, 0, itemMove)
+    this.sections.forEach((p, i) => p.priority = i + 1)
+    event.detail.complete()
+    this.productService.updateSections(this.sections)
   }
 
   // Product form
 
   async productForm(product: Product) {
-    let isNew
-    if (product) isNew = false
+    if (product) product.new = false
     else {
-      isNew = true
       product = {
         code: '',
         description: '',
@@ -196,7 +190,10 @@ export class ProductsPage implements OnInit {
         price: null,
         unit: '',
         url: '',
-      };
+        new: true,
+        stock: true,
+        has_extras: false,
+      }
     }
     const modal = await this.modalCtrl.create({
       component: ProductModal,
@@ -212,7 +209,7 @@ export class ProductsPage implements OnInit {
             this.alertService.presentToast('<ion-icon name="checkmark-circle" color="success"></ion-icon> ' + text)
           })
         } else {
-          if (!isNew) {
+          if (!product.new) {
             const i = this.sections.findIndex(p => p.name === product.section)
             const y = this.sections[i].products.findIndex(p => p.id === product.id)
             this.sections[i].products[y] = product
@@ -344,8 +341,8 @@ export class ProductsPage implements OnInit {
 
   async loadProducts(prods: Product[], event?) {
     return new Promise(async (resolve, reject) => {
-      this.loadedProducts += prods.length   
-      if (!this.sections[this.ySection].products) this.sections[this.ySection].products = []   
+      this.loadedProducts += prods.length
+      if (!this.sections[this.ySection].products) this.sections[this.ySection].products = []
       this.sections[this.ySection].products = this.sections[this.ySection].products.concat(prods)
       if (event) event.target.complete()
       resolve()

@@ -10,7 +10,7 @@ export class UidService {
   name: string
   subdominio: string
 
-  profile: MainProfile = {
+  empty_profile: MainProfile = {
     address: {
       address: '',
       lat: null,
@@ -61,7 +61,11 @@ export class UidService {
   themeInitialized = false
   fontInitialized = false
 
-  constructor( ) {  }
+  profile: MainProfile
+
+  constructor( ) {
+    this.profile = this.empty_profile
+  }
 
   setUid(uid) {
     this.uid = uid
@@ -91,8 +95,12 @@ export class UidService {
     return this.profileEmpty
   }
 
-  setProfileEmpty() {
-    this.profileEmpty = false
+  clearProfile() {
+    this.profile = this.empty_profile
+  }
+
+  setProfileEmpty(value: boolean) {
+    this.profileEmpty = value
   }
 
   getAuthChecked() {

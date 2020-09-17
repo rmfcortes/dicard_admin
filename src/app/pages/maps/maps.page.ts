@@ -117,7 +117,7 @@ export class MapsPage implements OnInit {
   }
 
   goMaps() {
-    const dir = this.profile.address.address.replace(/ /g, "+")
+    const dir = this.profile.address.address.replace(/ /g, '+')
     const page = `https://www.google.com/maps/?q=${dir}`
     this.inAppBrowser.create(page, '_self');
   }
@@ -158,8 +158,7 @@ export class MapsPage implements OnInit {
       this.icon = await this.toBase64(file.srcElement.files[0])
       this.profile.address.pin = await this.userService.uploadPhoto(this.icon.split('data:image/png;base64,')[1], 'pin')
       this.userService.setProfile(this.profile)
-    }
-    else {
+    } else {
       this.translateService.get('MAPS.pngFile').subscribe(text => {
         this.alertService.presentAlert('', text)
       })

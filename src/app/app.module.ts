@@ -22,6 +22,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { environment } from 'src/environments/environment.prod';
 import { LanguageService } from './services/language.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,6 +45,7 @@ import { LanguageService } from './services/language.service';
       }
     }),
     AngularFireModule.initializeApp(environment.firebase),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     StatusBar,

@@ -22,14 +22,13 @@ export class UserService {
   ) { }
 
   checkEmailNotTaken(control: FormControl) {
-    return new Promise((resolve, reject) => {       
+    return new Promise((resolve, reject) => {
       const emailSub = this.db.list('email-registered', data => data.orderByValue().equalTo(control.value)).valueChanges()
       .subscribe(email => {
         emailSub.unsubscribe()
         if (email && email.length > 0) {
           resolve({emailTaken: true})
-        }
-        else resolve(null)
+        } else resolve(null)
       },
       err => {
         console.log(err)
@@ -39,7 +38,7 @@ export class UserService {
   }
 
   getProfile(): Promise<MainProfile> {
-    return new Promise((resolve, reject) => {       
+    return new Promise((resolve, reject) => {
       const uid = this.uidService.getUid()
       const empty = this.uidService.getProfileEmpty()
       if (empty) {
@@ -48,9 +47,8 @@ export class UserService {
           profSub.unsubscribe()
           if (profile) {
             this.uidService.setProfile(profile)
-            this.uidService.setProfileEmpty()
-          }
-          else {
+            this.uidService.setProfileEmpty(false)
+          } else {
             profile = this.uidService.getProfile()
             this.setProfile(profile)
           }
@@ -69,8 +67,8 @@ export class UserService {
   }
 
   setProfile(profile: MainProfile) {
-    return new Promise(async(resolve, reject) => {
-      try {      
+    return new Promise(async (resolve, reject) => {
+      try {
         const uid = this.uidService.getUid()
         await this.db.object(`principal/${uid}/data`).update(profile)
         resolve()

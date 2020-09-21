@@ -20,3 +20,14 @@
 ion-icon {
     cursor: pointer;
 }
+
+.navigate_btn {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    top: -1rem;
+    border-radius: 50%;
+    background: red;
+    right: 2rem;
+    z-index: 999;
+}

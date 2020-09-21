@@ -10,7 +10,7 @@ import { } from 'googlemaps';
 import { AlertService } from 'src/app/services/alert.service';
 import { UserService } from 'src/app/services/user.service';
 
-import { MainProfile } from 'src/app/interfaces/profile.interface';
+import { MainProfile, Sucursal } from 'src/app/interfaces/profile.interface';
 import { ThemeService } from 'src/app/services/theme.service';
 import { UidService } from 'src/app/services/uid.service';
 
@@ -28,7 +28,7 @@ export class MapsPage implements OnInit {
   profileReady = false
   mapReady = false
 
-  map: any
+  maps = []
 
   err: string
 
@@ -61,11 +61,11 @@ export class MapsPage implements OnInit {
     this.getProfile()
   }
 
-  mapLoaded(event) {
+  mapLoaded(event, i) {
     this.mapReady = true
-    this.map = event
+    this.maps[i] = event
     if (!this.profile) {
-      this.mapLoaded(event)
+      this.mapLoaded(event, i)
       return
     }
     this.styleMap()
@@ -75,7 +75,7 @@ export class MapsPage implements OnInit {
     this.userService.getProfile()
     .then(async (profile) => {
       this.profile = profile
-      if (this.profile.address.pin) this.icon = this.profile.address.pin
+      if (this.profile.address[0].pin) this.icon = this.profile.address[0].pin
       const isThemeInit = this.uidService.isthemeInitialized()
       if (!isThemeInit) this.setTheme('all')
       const isFontInit = this.uidService.isFontInitialized()
@@ -116,47 +116,77 @@ export class MapsPage implements OnInit {
     this.themeService.setFonts(this.profile.font, src)
   }
 
-  goMaps() {
-    const dir = this.profile.address.address.replace(/ /g, '+')
+  goMaps(i: number) {
+    const dir = this.profile.address[i].address.replace(/ /g, '+')
     const page = `https://www.google.com/maps/?q=${dir}`
     this.inAppBrowser.create(page, '_self');
   }
 
   setAutocomplete() {
     this.mapsAPILoader.load().then(async () => {
-      const nativeHomeInputBox = document.getElementById('address').getElementsByTagName('input')[0];
-      const autocomplete = new google.maps.places.Autocomplete(nativeHomeInputBox, {
-        types: ['address']
-      });
+      this.profile.address.forEach((a, i) => {
+        const nativeHomeInputBox = document.getElementById('address' + i).getElementsByTagName('input')[0]
+        const autocomplete = new google.maps.places.Autocomplete(nativeHomeInputBox, { types: ['address'] })
+        autocomplete.addListener('place_changed', () => {
+            this.ngZone.run(async () => {
+                // get the place result
+                const place: google.maps.places.PlaceResult = autocomplete.getPlace()
+  
+                // verify result
+                if (place.geometry === undefined || place.geometry === null) return
+                // set latitude, longitude
+                this.profile.address[i].lat = place.geometry.location.lat()
+                this.profile.address[i].lng = place.geometry.location.lng()
+                this.profile.address[i].address = place.formatted_address
+                await this.userService.setProfile(this.profile)
+            })
+        })
+      })
+    })
+  }
+
+  setProfile() {
+    this.userService.setProfile(this.profile)
+  }
+
+  newBranch() {
+    this.profile.address.push({
+      address: '',
+      lat: null,
+      lng: null,
+      name: '',
+    })
+    const i = this.profile.address.length - 1
+    setTimeout(() => {
+      const nativeHomeInputBox = document.getElementById('address' + i).getElementsByTagName('input')[0]
+      const autocomplete = new google.maps.places.Autocomplete(nativeHomeInputBox, { types: ['address'] })
       autocomplete.addListener('place_changed', () => {
           this.ngZone.run(async () => {
               // get the place result
-              const place: google.maps.places.PlaceResult = autocomplete.getPlace();
-
+              const place: google.maps.places.PlaceResult = autocomplete.getPlace()
+  
               // verify result
-              if (place.geometry === undefined || place.geometry === null) {
-                  return;
-              }
+              if (place.geometry === undefined || place.geometry === null) return
               // set latitude, longitude
-              this.profile.address.lat = place.geometry.location.lat();
-              this.profile.address.lng = place.geometry.location.lng();
-              this.profile.address.address = place.formatted_address;
+              this.profile.address[i].lat = place.geometry.location.lat()
+              this.profile.address[i].lng = place.geometry.location.lng()
+              this.profile.address[i].address = place.formatted_address
               await this.userService.setProfile(this.profile)
-          });
-      });
-    });
+          })
+      })
+    }, 500);
   }
 
   async saveLocation(evento) {
-    this.profile.address.lat = evento.coords.lat;
-    this.profile.address.lng = evento.coords.lng;
+    this.profile.address[0].lat = evento.coords.lat
+    this.profile.address[0].lng = evento.coords.lng
     await this.userService.setProfile(this.profile)
   }
 
   async setPin(file) {
     if (file.srcElement.files[0].type === 'image/png') {
       this.icon = await this.toBase64(file.srcElement.files[0])
-      this.profile.address.pin = await this.userService.uploadPhoto(this.icon.split('data:image/png;base64,')[1], 'pin')
+      this.profile.address[0].pin = await this.userService.uploadPhoto(this.icon.split('data:image/png;base64,')[1], 'pin')
       this.userService.setProfile(this.profile)
     } else {
       this.translateService.get('MAPS.pngFile').subscribe(text => {
@@ -175,11 +205,10 @@ export class MapsPage implements OnInit {
   }
 
   styleMap() {
-    if (!this.map) return
-    if (!this.profile.address.poi && this.profile.address.dark) this.poiDarkMode()
-    if (!this.profile.address.poi && !this.profile.address.dark) this.poiLightMode()
-    if (this.profile.address.poi && this.profile.address.dark) this.cleanDarkMode()
-    if (this.profile.address.poi && !this.profile.address.dark) this.cleanLigthMode()
+    if (!this.profile.address[0].poi && this.profile.address[0].dark) this.poiDarkMode()
+    if (!this.profile.address[0].poi && !this.profile.address[0].dark) this.poiLightMode()
+    if (this.profile.address[0].poi && this.profile.address[0].dark) this.cleanDarkMode()
+    if (this.profile.address[0].poi && !this.profile.address[0].dark) this.cleanLigthMode()
     this.userService.setProfile(this.profile)
   }
 
@@ -197,8 +226,8 @@ export class MapsPage implements OnInit {
           stylers: [{visibility: 'off'}]
         }
       ]
-    };
-    this.map.setOptions({styles: styles['hide']})
+    }
+    this.maps.forEach(m => m.setOptions({styles: styles['hide']}))
   }
 
   poiLightMode() {
@@ -216,7 +245,8 @@ export class MapsPage implements OnInit {
         }
       ]
     };
-    this.map.setOptions({styles: styles['show']})
+    this.maps.forEach(m => m.setOptions({styles: styles['show']}))
+
   }
 
   cleanDarkMode() {
@@ -297,7 +327,7 @@ export class MapsPage implements OnInit {
         }
       ]
     }
-    this.map.setOptions({styles: styles['cleanDark']})
+    this.maps.forEach(m => m.setOptions({styles: styles['cleanDark']}))
 
   }
 
@@ -385,7 +415,7 @@ export class MapsPage implements OnInit {
         }
       ]
     }
-    this.map.setOptions({styles: styles['poiDark']})
+    this.maps.forEach(m => m.setOptions({styles: styles['poiDark']}))
   }
 
 }

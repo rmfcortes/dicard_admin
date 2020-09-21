@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { MainProfile } from '../interfaces/profile.interface';
 
 @Injectable({
@@ -11,11 +12,12 @@ export class UidService {
   subdominio: string
 
   empty_profile: MainProfile = {
-    address: {
+    address: [{
       address: '',
       lat: null,
-      lng: null
-    },
+      lng: null,
+      name: ''
+    }],
     colors: {
       address: '',
       background: '',
@@ -52,7 +54,8 @@ export class UidService {
     view: 'list-img',
     whatsApp: '',
     social_net: [],
-    description: ''
+    description: '',
+    type: ''
   }
 
   profileEmpty = true
@@ -62,6 +65,7 @@ export class UidService {
   fontInitialized = false
 
   profile: MainProfile
+  profile_sub = new BehaviorSubject<MainProfile>(null)
 
   constructor( ) {
     this.profile = this.empty_profile
@@ -89,6 +93,7 @@ export class UidService {
 
   setProfile(profile: MainProfile) {
     this.profile = profile
+    this.profile_sub.next(profile)
   }
 
   getProfileEmpty() {

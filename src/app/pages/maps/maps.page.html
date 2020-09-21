@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-title>Map</ion-title>
+        <ion-title>Ubicación</ion-title>
     </ion-toolbar>
 </ion-header>
 
@@ -12,12 +12,20 @@
                 <ion-col size="7" class="separate-scroll">
                     <!-- Address input -->
                     <ion-card>
+                        <ion-card-subtitle style="margin-left: 2rem;">Matriz</ion-card-subtitle>
                         <ion-item>
-                            <ion-label position="floating">{{'MAPS.address' | translate}}</ion-label>
-                            <ion-input type="text" id="address" #address [(ngModel)]="profile.address.address"></ion-input>
+                            <ion-label position="floating">Nombre</ion-label>
+                            <ion-input type="text" debounce="2000" (ionChange)="setProfile()" [(ngModel)]="profile.address[0].name"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label position="floating">Dirección</ion-label>
+                            <ion-input type="text" id="address0" [(ngModel)]="profile.address[0].address"></ion-input>
                         </ion-item>
                     </ion-card>
-                    <p style="text-align: center; font-size: small" class="ion-text-wrap" *ngIf="profile.address.address">{{'MAPS.tip' | translate}}</p>
+                    <ion-item lines="none" (click)="newBranch()">
+                        <ion-button slot="end" color="primary">Agregar sucursal</ion-button>
+                    </ion-item>
+                    <p style="text-align: center; font-size: small" class="ion-text-wrap" *ngIf="profile.address && profile.address.length > 0 && profile.address[0].address">{{'MAPS.tip' | translate}}</p>
 
 
                     <!-- Custom pin -->
@@ -35,7 +43,7 @@
                     <ion-card>
                         <ion-item>
                             <ion-label class="ion-text-wrap" color="medium">{{'MAPS.poi' | translate}}</ion-label>
-                            <ion-toggle [(ngModel)]="profile.address.poi" slot="end" (ionChange)="styleMap()"></ion-toggle>
+                            <ion-toggle [(ngModel)]="profile.address[0].poi" slot="end" (ionChange)="styleMap()"></ion-toggle>
                         </ion-item>
                     </ion-card>
 
@@ -44,7 +52,7 @@
                     <ion-card>
                         <ion-item>
                             <ion-label class="ion-text-wrap" color="medium">{{'MAPS.dark' | translate}}</ion-label>
-                            <ion-toggle slot="end" [(ngModel)]="profile.address.dark" (ionChange)="styleMap()"></ion-toggle>
+                            <ion-toggle slot="end" [(ngModel)]="profile.address[0].dark" (ionChange)="styleMap()"></ion-toggle>
                         </ion-item>
                     </ion-card>
 
@@ -94,37 +102,53 @@
 
                     </ion-card>
 
+                    <!-- Branches -->
+                    <div *ngIf="profile && profile.address.length > 1">
+                        <div *ngFor="let item of profile.address; let first = first; let i = index">
+                            <ion-card *ngIf="!first">
+                                <ion-card-subtitle style="margin-left: 2rem;">Sucursal {{i}}</ion-card-subtitle>
+                                <ion-item>
+                                    <ion-label position="floating">Nombre</ion-label>
+                                    <ion-input type="text" debounce="2000" (ionChange)="setProfile()" [(ngModel)]="profile.address[i].name"></ion-input>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-label position="floating">Dirección</ion-label>
+                                    <ion-input type="text" [id]="'address'+i" [(ngModel)]="profile.address[i].address"></ion-input>
+                                </ion-item>
+                            </ion-card>
+                        </div>
+                    </div>
+
                 </ion-col>
 
                 <!-- Template preview -->
                 <ion-col size="5">
                     <div class="smartphone">
                         <div class="content background">
-                            <!-- Navigate button -->
-                            <ion-item lines="none" (click)="goMaps()">
-                                <ion-icon slot="end" size="large" name="navigate-circle" class="navigate" style="cursor: pointer;"></ion-icon>
-                            </ion-item>
-                            <!-- Título y dirección -->
-                            <ion-item lines="none" style="text-align: center">
-                                <ion-label class="ion-text-wrap">
-                                    <h1 class="location">{{'MAPS.location' | translate}}</h1>
-                                </ion-label>
-                            </ion-item>
-                            <app-separador-estrella [src]="'location'"></app-separador-estrella>
-                            <ion-item lines="none" style="text-align: center;">
-                                <ion-label class="ion-text-wrap">
-                                    <h2 class="address">{{profile.address.address}}</h2>
-                                </ion-label>
-                            </ion-item>
-                            <!-- Mapa -->
-                            <div [style.display]="mapReady ? 'initial' : 'none'">
-                                <agm-map style="height: 50vh" [latitude]="profile.address.lat" [longitude]="profile.address.lng" [streetViewControl]="false" [zoom]=15 (mapReady)="mapLoaded($event)">
-                                    <agm-marker [markerDraggable]="true" (dragEnd)="saveLocation($event)" [iconUrl]='{"url": icon,"scaledSize": {"height": 75, "width": 50}}' [latitude]="profile.address.lat" [longitude]="profile.address.lng" [animation]="'DROP'"></agm-marker>
-                                </agm-map>
+                            <div *ngFor="let item of profile.address; let i = index" style="margin-top: 1.5rem;">
+                                <!-- Título y dirección -->
+                                <ion-item lines="none" style="text-align: center">
+                                    <ion-label class="ion-text-wrap">
+                                        <h1 class="location">{{item.name}}</h1>
+                                    </ion-label>
+                                    <ion-icon (click)="goMaps(i)" slot="end" size="large" name="navigate-circle" class="navigate" style="cursor: pointer;"></ion-icon>
+                                </ion-item>
+                                <app-separador-estrella [src]="'location'"></app-separador-estrella>
+                                <ion-item lines="none" style="text-align: center;">
+                                    <ion-label class="ion-text-wrap">
+                                        <h2 class="address">{{profile.address[i].address}}</h2>
+                                    </ion-label>
+                                </ion-item>
+                                <!-- Mapa -->
+                                <div [style.display]="mapReady ? 'initial' : 'none'" style="position: relative;">
+                                    <agm-map style="height: 50vh" [latitude]="profile.address[i].lat" [longitude]="profile.address[i].lng" [streetViewControl]="false" [zoom]=15 (mapReady)="mapLoaded($event, i)">
+                                        <agm-marker [markerDraggable]="true" (dragEnd)="saveLocation($event)" [iconUrl]='{"url": icon,"scaledSize": {"height": 75, "width": 50}}' [latitude]="profile.address[i].lat" [longitude]="profile.address[i].lng" [animation]="'DROP'"></agm-marker>
+                                    </agm-map>
+                                </div>
+                                <ion-item lines="none" *ngIf="!mapReady">
+                                    <ion-spinner style="margin: auto;" name="dots"></ion-spinner>
+                                </ion-item>
                             </div>
-                            <ion-item lines="none" *ngIf="!mapReady">
-                                <ion-spinner style="margin: auto;" name="dots"></ion-spinner>
-                            </ion-item>
                         </div>
                     </div>
                 </ion-col>

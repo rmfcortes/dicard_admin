@@ -14,8 +14,8 @@ import { MenuController } from '@ionic/angular';
 })
 export class LoginPage implements OnInit {
 
-  form: FormGroup;
-  formSignUp: FormGroup;
+  form: FormGroup
+  formSignUp: FormGroup
   validation_messages
   validation_signUp_messages
   err: string

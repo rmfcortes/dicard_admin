@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { LanguageService } from './services/language.service';
 import { AuthService } from './services/auth.service';
 import { OrdersService } from './services/orders.service';
+import { UserService } from './services/user.service';
+import { UidService } from './services/uid.service';
 
 @Component({
   selector: 'app-root',
@@ -24,11 +26,6 @@ export class AppComponent implements OnInit {
       icon: 'location'
     },
     {
-      title: 'MENU.orders',
-      url: '/orders',
-      icon: 'cart'
-    },
-    {
       title: 'MENU.products',
       url: '/products',
       icon: 'book'
@@ -41,14 +38,30 @@ export class AppComponent implements OnInit {
     private router: Router,
     private languageService: LanguageService,
     private orderService: OrdersService,
+    private profileService: UidService,
     private authService: AuthService,
   ) {
     this.languageService.getDefaultLanguage()
   }
 
   ngOnInit() {
-    this.orderService.listenOrders()
-    this.listenOrders()
+    this.getProfile()
+  }
+
+  getProfile() {
+    this.profileService.profile_sub.subscribe(profile => {
+      if (profile && profile.type === 'products') {
+        this.appPages.unshift(
+          {
+            title: 'MENU.orders',
+            url: '/orders',
+            icon: 'cart'
+          }
+        )
+        this.orderService.listenOrders()
+        this.listenOrders()
+      }
+    })
   }
 
   listenOrders() {
@@ -57,8 +70,11 @@ export class AppComponent implements OnInit {
 
 
   logOut() {
-    this.authService.logout()
-    this.router.navigate(['/login'], {replaceUrl: true})
+    this.orderService.stopListen()
+    setTimeout(() => {
+      this.authService.logout()
+      this.router.navigate(['/login'], {replaceUrl: true})
+    }, 350)
   }
 
 }

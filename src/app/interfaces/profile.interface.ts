@@ -13,13 +13,14 @@ export interface MainProfile {
     vertical_cover: string;
     employment: string;
     phone: string;
-    address: Address;
+    address: Address[];
     view: string;
     whatsApp: string;
     web?: string;
     social_net?: Social[];
     addContact?: boolean;
     description: string;
+    type: string;
 }
 
 export interface Fonts {
@@ -72,9 +73,15 @@ export interface Address {
     pin?: string;
     poi?: string;
     dark?: boolean;
+    name: string;
 }
 
 export interface Social {
     icon: string;
     page: string;
+}
+
+export interface Sucursal {
+    name: string
+    location: Address
 }

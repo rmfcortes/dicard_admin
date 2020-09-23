@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 import { MenuController, ModalController } from '@ionic/angular';
+
+import { Font } from 'ngx-font-picker';
 
 import { CropImageModal } from 'src/app/modals/crop-image/crop-image.modal';
 
 import { AlertService } from 'src/app/services/alert.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { UserService } from 'src/app/services/user.service';
+import { UidService } from 'src/app/services/uid.service';
 
 import { MainProfile, Colors } from 'src/app/interfaces/profile.interface';
-import { Font } from 'ngx-font-picker';
-import { UidService } from 'src/app/services/uid.service';
 
 
 @Component({
@@ -92,6 +93,15 @@ export class HomePage implements OnInit {
 
   lastuid: string
 
+  page = 'form'
+  scrWidth: number
+  hideMainCol = false
+
+  @HostListener('window:resize')
+  getScreenSize() {
+    this.scrWidth = window.innerWidth
+  }
+
   constructor(
     private menu: MenuController,
     private modalCtrl: ModalController,
@@ -99,7 +109,7 @@ export class HomePage implements OnInit {
     private themeService: ThemeService,
     private userService: UserService,
     private uidService: UidService,
-  ) {}
+  ) { this.getScreenSize() }
 
   async ngOnInit() {
     this.lastuid = this.uidService.getUid()
@@ -109,6 +119,11 @@ export class HomePage implements OnInit {
 
   ionViewWillEnter() {
     this.menu.enable(true)
+  }
+
+  segmentChanged() {
+    if (this.page === 'view') this.hideMainCol = true
+    else this.hideMainCol = false
   }
 
   getProfile() {

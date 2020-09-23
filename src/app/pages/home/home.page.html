@@ -3,6 +3,19 @@
         <ion-title>
             {{'MENU.home' | translate}}
         </ion-title>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-toolbar class="mobile">
+        <ion-segment [(ngModel)]="page" (ionChange)="segmentChanged()">
+            <ion-segment-button value="form">
+                <ion-label>Información</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="view">
+                <ion-label>Vista previa</ion-label>
+            </ion-segment-button>
+        </ion-segment>
     </ion-toolbar>
 </ion-header>
 
@@ -11,7 +24,7 @@
         <ion-grid fixed>
             <ion-row>
                 <!-- Form -->
-                <ion-col size="6" class="separate-scroll">
+                <ion-col size-lg="6" size-xl="6" size-xs="12" size-sm="12" size-md="12" class="separate-scroll" *ngIf="!hideMainCol">
 
                     <!-- Template -->
                     <ion-card>
@@ -158,6 +171,9 @@
                             <ion-item>
                                 <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.web" placeholder="{{'PROFILE.web' | translate}}"></ion-input>
                             </ion-item>
+                            <ion-item>
+                                <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.description" placeholder="Reseña"></ion-input>
+                            </ion-item>
                         </ng-container>
 
                     </ion-card>
@@ -266,7 +282,7 @@
                 </ion-col>
 
                 <!-- Template preview -->
-                <ion-col size="6">
+                <ion-col size-lg="6" size-xl="6" size-xs="12" size-sm="12" size-md="12" *ngIf="hideMainCol || scrWidth >= 992">
                     <div class="smartphone">
                         <div class="content background">
                             <div [ngSwitch]="profile.template">

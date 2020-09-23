@@ -58,6 +58,13 @@ export class AppComponent implements OnInit {
             icon: 'cart'
           }
         )
+        this.appPages.push(
+          {
+            title: 'Historial',
+            url: '/historial',
+            icon: 'file-tray-stacked'
+          }
+        )
         this.orderService.listenOrders()
         this.listenOrders()
       }

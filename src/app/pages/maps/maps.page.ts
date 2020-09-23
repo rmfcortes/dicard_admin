@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, HostListener } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 import { MenuController } from '@ionic/angular';
@@ -43,6 +43,15 @@ export class MapsPage implements OnInit {
   font_address: null
   font_location: null
 
+  page = 'form'
+  scrWidth: number
+  hideMainCol = false
+
+  @HostListener('window:resize')
+  getScreenSize() {
+    this.scrWidth = window.innerWidth
+  }
+
   constructor(
     private ngZone: NgZone,
     private menu: MenuController,
@@ -53,13 +62,19 @@ export class MapsPage implements OnInit {
     private alertService: AlertService,
     private userService: UserService,
     private uidService: UidService,
-  ) { }
+  ) { this.getScreenSize() }
 
   async ngOnInit() {
     this.menu.enable(true)
     await this.alertService.presentLoading()
     this.getProfile()
   }
+
+  segmentChanged() {
+    if (this.page === 'view') this.hideMainCol = true
+    else this.hideMainCol = false
+  }
+
 
   mapLoaded(event, i) {
     this.mapReady = true
@@ -101,7 +116,7 @@ export class MapsPage implements OnInit {
       this.err = err
       setTimeout(() => {
         this.setAutocomplete()
-      }, 300);
+      }, 300)
       this.alertService.dismissLoading()
     })
   }
@@ -111,6 +126,11 @@ export class MapsPage implements OnInit {
   }
 
   async changeFont(src: string, font: Font) {
+    const archivos = Object.entries(font.files)
+    archivos.forEach((file: any) => {
+      const url = file[1].slice(4)
+      font.files[file[0]] = 'https' + url
+    })
     this.profile.font[src] = font
     await this.themeService.createFont(this.profile.font[src])
     this.themeService.setFonts(this.profile.font, src)

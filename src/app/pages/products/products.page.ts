@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { IonInfiniteScroll, ModalController, IonInput } from '@ionic/angular';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -73,6 +73,15 @@ export class ProductsPage implements OnInit {
   font_product_price: null
   font_product_description: null
 
+  page = 'form'
+  scrWidth: number
+  hideMainCol = false
+
+  @HostListener('window:resize')
+  getScreenSize() {
+    this.scrWidth = window.innerWidth
+  }
+
   constructor(
     private modalCtrl: ModalController,
     private productService: ProductsService,
@@ -80,11 +89,16 @@ export class ProductsPage implements OnInit {
     private themeService: ThemeService,
     private alertService: AlertService,
     private userService: UserService,
-  ) { }
+  ) { this.getScreenSize() }
 
   async ngOnInit() {
     await this.alertService.presentLoading()
     this.getProfile('all')
+  }
+
+  segmentChanged() {
+    if (this.page === 'view') this.hideMainCol = true
+    else this.hideMainCol = false
   }
 
   showSectionInput() {
@@ -97,6 +111,11 @@ export class ProductsPage implements OnInit {
   }
 
   async changeFont(src: string, font: Font) {
+    const archivos = Object.entries(font.files)
+    archivos.forEach((file: any) => {
+      const url = file[1].slice(4)
+      font.files[file[0]] = 'https' + url
+    })
     this.profile.font[src] = font
     await this.themeService.createFont(this.profile.font[src])
     this.themeService.setFonts(this.profile.font, src)

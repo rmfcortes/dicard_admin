@@ -1,11 +1,11 @@
 import { Validators, FormGroup, FormControl } from '@angular/forms';
+import { IonInput, MenuController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
-import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -44,6 +44,16 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     this.menu.enable(false)
     this.setForm()
+  }
+
+  focus(nextElement: IonInput) {
+    nextElement.setFocus()
+  }
+
+  async blur(nextElement: IonInput) {
+    const h: HTMLInputElement = await nextElement.getInputElement()
+    h.blur()
+    this.signIn()
   }
 
   setForm() {

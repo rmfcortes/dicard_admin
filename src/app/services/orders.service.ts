@@ -32,6 +32,22 @@ export class OrdersService {
     })
   }
 
+  async complete(order: Order) {
+    const uid = this.uidService.getUid()
+    await this.db.object(`principal/${uid}/historial/${order.id}`).set(order)
+    this.db.object(`orders/${uid}/${order.id}`).remove()
+  }
+
+  getHistorial(): Promise<Order[]> {
+    return new Promise((resolve, reject) => {
+      const uid = this.uidService.getUid()
+      const hisSub = this.db.list(`principal/${uid}/historial`).valueChanges().subscribe((historial: Order[]) => {
+        hisSub.unsubscribe()
+        resolve(historial)
+      })
+    })
+  }
+
   stopListen() {
     if (this.orderSub) this.orderSub.unsubscribe()
   }

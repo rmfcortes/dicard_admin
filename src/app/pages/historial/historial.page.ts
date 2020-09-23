@@ -7,20 +7,19 @@ import { MainProfile } from 'src/app/interfaces/profile.interface';
 import { Order } from 'src/app/interfaces/cart.interface';
 
 @Component({
-  selector: 'app-orders',
-  templateUrl: './orders.page.html',
-  styleUrls: ['./orders.page.scss'],
+  selector: 'app-historial',
+  templateUrl: './historial.page.html',
+  styleUrls: ['./historial.page.scss'],
 })
-export class OrdersPage implements OnInit {
-  
+export class HistorialPage implements OnInit {
 
-  orders: Order[] = []
+  historial: Order[] = []
   order: Order
 
-  scrWidth: number
-  hideMainCol = false
-
   profile: MainProfile
+
+  hideMainCol = false
+  scrWidth: number
 
   @HostListener('window:resize')
   getScreenSize() {
@@ -40,14 +39,14 @@ export class OrdersPage implements OnInit {
     this.userService.getProfile()
     .then(async (profile) => {
       this.profile = profile
-      this.listenPedidos()
+      this.getHistorial()
     })
   }
 
-  listenPedidos() {
-    this.orderService.orders_subject.subscribe(orders => {
-      this.orders = orders
-      this.orders.sort((a, b) => b.createdAt - a.createdAt)
+  getHistorial() {
+    this.orderService.getHistorial().then(historial => {
+      this.historial = historial
+      this.historial.sort((a, b) => b.createdAt - a.createdAt)
     })
   }
 
@@ -56,20 +55,9 @@ export class OrdersPage implements OnInit {
     this.hideMainCol = true
   }
 
-  complete() {
-    this.orderService.complete(this.order)
-    this.regresar()
-  }
-
   regresar() {
     this.order = null
     this.hideMainCol = false
-  }
-
-  // Tracks
-
-  trackOrders(index: number, el: Order): string {
-    return el.id
   }
 
 }

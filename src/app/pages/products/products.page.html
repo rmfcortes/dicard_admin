@@ -1,6 +1,19 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-title>Products</ion-title>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Productos / Servicios</ion-title>
+    </ion-toolbar>
+    <ion-toolbar class="mobile">
+        <ion-segment [(ngModel)]="page" (ionChange)="segmentChanged()">
+            <ion-segment-button value="form">
+                <ion-label>Información</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="view">
+                <ion-label>Vista previa</ion-label>
+            </ion-segment-button>
+        </ion-segment>
     </ion-toolbar>
 </ion-header>
 
@@ -9,7 +22,7 @@
         <ion-grid fixed>
             <ion-row>
                 <!-- Form -->
-                <ion-col size="7" class="separate-scroll">
+                <ion-col size-lg="7" size-xl="7" size-xs="12" size-sm="12" size-md="12" class="separate-scroll" *ngIf="!hideMainCol">
 
 
                     <!-- Views selector -->
@@ -167,7 +180,7 @@
                 </ion-col>
 
                 <!-- Template preview -->
-                <ion-col size="5">
+                <ion-col size-lg="5" size-xl="5" size-xs="12" size-sm="12" size-md="12" *ngIf="hideMainCol || scrWidth >= 992">
                     <div class="smartphone">
                         <div class="content background">
                             <ng-container *ngIf="product; else modalProduct">

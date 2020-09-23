@@ -106,7 +106,7 @@
                         </ion-item>
                         <ng-container *ngIf="viewColors">
                             <ion-item>
-                                <ion-label color="medium">{{'PRODUCTS.header' | translate}}</ion-label>
+                                <ion-label color="medium">Encabezado</ion-label>
                                 <div class="colorPicker" [style.background]="profile.colors.segmentButton" (click)="pickerHeader = true"> {{profile.colors.segmentButton}}</div>
                                 <ion-icon *ngIf="pickerHeader" slot="end" name="close" color="primary" (click)="pickerHeader = false"></ion-icon>
                                 <ng-container *ngIf="!pickerFontHeader else pickerFontHeaderTemplate">
@@ -125,6 +125,12 @@
                                 <ion-icon *ngIf="pickerHeaderSelected" slot="end" name="close" color="primary" (click)="pickerHeaderSelected = false"></ion-icon>
                             </ion-item>
                             <color-sketch *ngIf="pickerHeaderSelected" [color]="profile.colors.segmentButtonFocused || 'grey'" (onChangeComplete)="setTheme('segment_focused')" (onChange)="profile.colors.segmentButtonFocused = $event.color.hex"></color-sketch>
+                            <ion-item>
+                                <ion-label color="medium">Pestaña seleccionada texto</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.segmentButtonFocusedText" (click)="pickerHeaderText = true"> {{profile.colors.segmentButtonFocusedText}}</div>
+                                <ion-icon *ngIf="pickerHeaderText" slot="end" name="close" color="primary" (click)="pickerHeaderText = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerHeaderText" [color]="profile.colors.segmentButtonFocusedText || 'grey'" (onChangeComplete)="setTheme('segment_focused_text')" (onChange)="profile.colors.segmentButtonFocusedText = $event.color.hex"></color-sketch>
                             <ion-item>
                                 <ion-label color="medium">{{'PRODUCTS.colorName' | translate}}</ion-label>
                                 <div class="colorPicker" [style.background]="profile.colors.nameProduct" (click)="pickerNameProduct = true"> {{profile.colors.nameProduct}}</div>
@@ -203,16 +209,22 @@
                                 </ion-item>
                             </ng-container>
                             <ng-template #modalProduct>
-                                <ion-segment scrollable value="'all'" *ngIf="sections.length > 0">
-                                    <ion-segment-button (click)="reset()" class="ion-text-wrap segment" value="'all'">
-                                        {{'PRODUCTS.all' | translate}}
-                                    </ion-segment-button>
-                                    <ng-container *ngFor="let section of sections">
-                                        <ion-segment-button (click)="reset(section.name)" [value]="section.name" class="ion-text-wrap segment">
-                                            {{section.name}}
-                                        </ion-segment-button>
-                                    </ng-container>
-                                </ion-segment>
+                                <div style="z-index: 150; position: sticky; top: 0rem; padding-top: 1rem; padding-left: 0.75rem;" *ngIf="sections.length > 1">
+                                    <div class="scrolling-wrapper">
+                                        <div class="card">
+                                            <ion-chip mode="ios" [ngClass]="{'sel' : !sectionSelected}" (click)="reset()">
+                                                <ion-label *ngIf="!sectionSelected">Todos</ion-label>
+                                                <ion-label *ngIf="sectionSelected">Todos</ion-label>
+                                            </ion-chip>
+                                        </div>
+                                        <div class="card" *ngFor="let item of sections">
+                                            <ion-chip mode="ios" [ngClass]="{'sel' : sectionSelected === item.name}" (click)="reset(item.name)">
+                                                <ion-label *ngIf="sectionSelected === item.name">{{item.name}}</ion-label>
+                                                <ion-label *ngIf="sectionSelected !== item.name">{{item.name}}</ion-label>
+                                            </ion-chip>
+                                        </div>
+                                    </div>
+                                </div>
                                 <ng-container *ngIf="loadedProducts > 0">
                                     <div [ngSwitch]="profile.view">
                                         <div *ngSwitchCase="'list-img'">

@@ -51,6 +51,7 @@ export class ProductsPage implements OnInit {
   viewColors = false
 
   pickerHeader = false
+  pickerHeaderText = false
   pickerHeaderSelected = false
   pickerNameProduct = false
   pickerDescription = false
@@ -172,7 +173,7 @@ export class ProductsPage implements OnInit {
 
   async removeSection(i: number, section: string) {
     this.translateService.get(['COMMON.delete', 'COMMON.sureSection', 'COMMON.cancel', 'COMMON.ok']).subscribe(text => {
-      this.alertService.presentAlertAction(text['COMMON.delete'] + ' ' + section, text['COMMON.sureSection'], text['COMMON.cancel'], text['COMMON.ok'])
+      this.alertService.presentAlertAction(text['COMMON.delete'] + ' ' + section, text['COMMON.sureSection'], 'Eliminar', 'Cancelar')
       .then(resp => {
         if (resp) {
           this.sections.splice(i, 1)
@@ -198,8 +199,11 @@ export class ProductsPage implements OnInit {
   // Product form
 
   async productForm(product: Product) {
-    if (product) product.new = false
-    else {
+    let oldSection = ''
+    if (product) {
+      product.new = false
+      oldSection = product.section
+    } else {
       product = {
         code: '',
         description: '',
@@ -229,15 +233,23 @@ export class ProductsPage implements OnInit {
           })
         } else {
           if (!product.new) {
-            const i = this.sections.findIndex(p => p.name === product.section)
-            const y = this.sections[i].products.findIndex(p => p.id === product.id)
-            this.sections[i].products[y] = product
+            const i = this.sections.findIndex(s => s.name === product.section)
+            const iOld = this.sections.findIndex(s => s.name === oldSection)
+            if (oldSection !== product.section) {
+              if (!this.sections[i].products) this.sections[i].products = []
+              this.sections[i].products.push(product)
+              const y = this.sections[iOld].products.findIndex(p => p.id === product.id)
+              this.sections[iOld].products.splice(y, 1)
+            } else {
+              const y = this.sections[i].products.findIndex(p => p.id === product.id)
+              this.sections[i].products[y] = product
+            }
           } else {
             this.newProduct(resp.data)
           }
         }
       }
-    });
+    })
     return await modal.present()
   }
 

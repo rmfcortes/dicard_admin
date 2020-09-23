@@ -1,4 +1,73 @@
-<div class="background_third">
+<!-- Portada -->
+<div class="marco-portada shadow">
+    <preload-image [ratio]="{w: 1, h: 0.5}" [src]="profile.cover"></preload-image>
+    <div class="share-frame">
+        <div class="centrar">
+            <ion-item lines="none">
+                <ion-icon color="light" name="qr-code"></ion-icon>
+            </ion-item>
+            <ion-item lines="none">
+                <ion-icon color="light" name="paper-plane"></ion-icon>
+            </ion-item>
+            <ion-item lines="none">
+                <ion-icon color="light" name="logo-whatsapp"></ion-icon>
+            </ion-item>
+        </div>
+    </div>
+</div>
+
+<!-- Foto perfil -->
+<div class="marco-foto">
+    <preload-image [ratio]="{w: 1, h: 1}" [src]="profile.photo"></preload-image>
+</div>
+
+<!-- Nombre -->
+<ion-item lines="none" style="text-align: center;">
+    <ion-label>
+        <h1 class="ion-text-wrap nombre">{{profile.name}}</h1>
+        <p class="ion-text-wrap puesto">{{profile.employment}}</p>
+        <p class="ion-text-wrap puesto" *ngIf="profile.web" (click)="goPage(profile.web)">{{profile.web}}</p>
+    </ion-label>
+</ion-item>
+
+<!-- Contacto botones -->
+<ion-grid style="margin-bottom: 4rem;">
+    <ion-row>
+        <ion-col *ngFor="let item of profile.contact">
+            <div>
+                <ion-fab vertical="top" horizontal="center" slot="fixed">
+                    <ion-fab-button class="botones">
+                        <ion-icon [name]="item.icon"></ion-icon>
+                    </ion-fab-button>
+                </ion-fab>
+            </div>
+        </ion-col>
+        <ion-col *ngFor="let item of profile.social_net">
+            <div>
+                <ion-fab vertical="top" horizontal="center" slot="fixed" (click)="goPage(item.page)">
+                    <ion-fab-button class="botones">
+                        <ion-icon [name]="item.icon"></ion-icon>
+                    </ion-fab-button>
+                </ion-fab>
+            </div>
+        </ion-col>
+    </ion-row>
+</ion-grid>
+
+
+<ion-item lines="none" style="text-align: center; margin: 0.75rem 0 0 0;">
+    <ion-label>
+        <h2 class="ion-text-wrap follow">{{profile.about | titlecase}}</h2>
+    </ion-label>
+</ion-item>
+<app-separador-estrella [src]="'follow'"></app-separador-estrella>
+<ion-item lines="none" style="text-align: center; margin-bottom: 2rem;">
+    <ion-label class="ion-text-wrap">
+        <p class="ion-text-wrap puesto">{{profile.description}}</p>
+    </ion-label>
+</ion-item>
+
+<!-- <div class="background_third">
     <img [src]="profile?.vertical_cover || noImage" style="object-fit: cover; height: 100%;">
 </div>
 <div class="footer background">
@@ -31,4 +100,4 @@
             <ion-icon [name]="item.icon"></ion-icon>
         </ion-fab-button>
     </ion-fab-list>
-</ion-fab>
+</ion-fab> -->

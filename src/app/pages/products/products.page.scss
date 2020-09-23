@@ -56,3 +56,12 @@ ion-segment-button {
     z-index: 20;
     position: absolute;
 }
+
+.scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    .card {
+        display: inline-block;
+    }
+}

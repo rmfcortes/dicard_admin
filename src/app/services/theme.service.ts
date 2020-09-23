@@ -56,7 +56,12 @@ export class ThemeService {
     colors.iconsTabsFocused ? themeWrapper.style.setProperty('--iconsTabsFocused', colors.iconsTabsFocused) : themeWrapper.style.setProperty('--iconsTabsFocused', 'grey')
     if (src === 'address' || src === 'all') colors.address ? themeWrapper.style.setProperty('--addressColor', colors.address) : themeWrapper.style.setProperty('--addressColor', 'black')
     if (src === 'header' || src === 'all') colors.segmentButton ? themeWrapper.style.setProperty('--segmentButtonColor', colors.segmentButton) : themeWrapper.style.setProperty('--segmentButtonColor', 'black')
-    if (src === 'segment_focused' || src === 'all') colors.segmentButtonFocused ? themeWrapper.style.setProperty('--segmentButtonFocusedColor', colors.segmentButtonFocused) : themeWrapper.style.setProperty('--segmentButtonFocusedColor', 'grey')
+    if (src === 'segment_focused' || src === 'all') { colors.segmentButtonFocused ?
+      themeWrapper.style.setProperty('--segmentButtonFocusedColor', colors.segmentButtonFocused) : themeWrapper.style.setProperty('--segmentButtonFocusedColor', 'grey')
+    }
+    if (src === 'segment_focused_text' || src === 'all') { colors.segmentButtonFocusedText ?
+      themeWrapper.style.setProperty('--segmentButtonFocusedTextColor', colors.segmentButtonFocusedText) : themeWrapper.style.setProperty('--segmentButtonFocusedTextColor', 'grey')
+    }
     if (src === 'product_name' || src === 'all') colors.nameProduct ? themeWrapper.style.setProperty('--nameProductColor', colors.nameProduct) : themeWrapper.style.setProperty('--nameProductColor', 'black')
     if (src === 'product_description' || src === 'all') colors.descriptionProduct ? themeWrapper.style.setProperty('--descripProdColor', colors.descriptionProduct) : themeWrapper.style.setProperty('--descripProdColor', 'grey')
     if (src === 'product_price' || src === 'all') colors.priceProduct ? themeWrapper.style.setProperty('--priceProdColor', colors.priceProduct) : themeWrapper.style.setProperty('--priceProdColor', 'black')

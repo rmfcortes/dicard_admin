@@ -10,6 +10,7 @@ export interface MainProfile {
     name: string;
     template: string;
     cover: string;
+    cover_desktop: string;
     vertical_cover: string;
     employment: string;
     phone: string;
@@ -21,6 +22,7 @@ export interface MainProfile {
     addContact?: boolean;
     description: string;
     type: string;
+    about: string;
 }
 
 export interface Fonts {
@@ -55,10 +57,12 @@ export interface Colors {
     iconHomeTab: string;
     segmentButton: string;
     segmentButtonFocused: string;
+    segmentButtonFocusedText: string;
     nameProduct: string;
     descriptionProduct: string;
     priceProduct: string;
     backgroundCard: string;
+    light: string;
 }
 
 export interface Contact {

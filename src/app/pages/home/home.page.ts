@@ -191,8 +191,10 @@ export class HomePage implements OnInit {
       nameProduct: color.hex,
       priceProduct: contrast,
       segmentButton: this.adjust(color.hex, 80),
-      segmentButtonFocused: contrast,
-      textButtons: contrast // icon contact text
+      segmentButtonFocused: color.hex,
+      segmentButtonFocusedText: contrast,
+      textButtons: contrast, // icon contact text
+      light: this.adjust(color.hex, -90)
     }
     this.profile.colors = theme
     this.setTheme('all')
@@ -204,12 +206,12 @@ export class HomePage implements OnInit {
 
   contrast(red, green, blue) {
     let brightness
-    brightness = (red * 299) + (green * 587) + (blue * 114);
-    brightness = brightness / 255000;
+    brightness = (red * 299) + (green * 587) + (blue * 114)
+    brightness = brightness / 255000
 
     // values range from 0 to 1
     // anything greater than 0.5 should be bright enough for dark text
-    if (brightness >= 0.5) return 'black';
+    if (brightness >= 0.5) return 'black'
     else return 'white'
   }
 
@@ -332,16 +334,19 @@ export class HomePage implements OnInit {
   // Crop cover or photo
 
   async cropImage(imageChangedEvent, aspect, src: string, maintainAspectRatio: boolean) {
+    let isCover = false
+    if (src === 'cover') isCover = true
     const modal = await this.modalCtrl.create({
       component: CropImageModal,
-      componentProps: {imageChangedEvent, aspect, maintainAspectRatio}
+      componentProps: {imageChangedEvent, aspect, maintainAspectRatio, isCover}
     })
     modal.onWillDismiss().then(async (resp) => {
       if (resp.data) {
         switch (src) {
           case 'cover':
             this.profile.cover = resp.data
-            this.profile.cover = await this.userService.uploadPhoto(resp.data.split('data:image/png;base64,')[1], 'cover')
+            this.profile.cover = await this.userService.uploadPhoto(resp.data.mobile.split('data:image/png;base64,')[1], 'cover')
+            this.profile.cover_desktop = await this.userService.uploadPhoto(resp.data.desktop.split('data:image/png;base64,')[1], 'cover_desktop')
             break
           case 'profile':
             this.profile.photo = resp.data

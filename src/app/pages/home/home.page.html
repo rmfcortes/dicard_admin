@@ -106,14 +106,14 @@
                             <ion-icon slot="end" name="chevron-up" color="primary" *ngIf="showImages === true" (click)="showImages = false" style="cursor: pointer;"></ion-icon>
                         </ion-item>
                         <ng-container *ngIf="showImages">
-                            <ion-item *ngIf="profile.template === 'third'">
+                            <ion-item *ngIf="profile.template === 'fourth'">
                                 <ion-label color="medium">{{'PROFILE.cover' | translate}}</ion-label>
                                 <ion-button (click)="vertical_cover.click()" expand="block" shape="round">
                                     {{'COMMON.search' | translate}}
                                 </ion-button>
                                 <input style="display: none" (change)="cropImage($event, 1/2, 'vertical_cover', true)" type="file" #vertical_cover>
                             </ion-item>
-                            <ion-item *ngIf="profile.template === 'first'">
+                            <ion-item *ngIf="profile.template === 'first' || profile.template === 'third'">
                                 <ion-label color="medium">{{'PROFILE.cover' | translate}}</ion-label>
                                 <ion-button (click)="cover.click()" expand="block" shape="round">
                                     {{'COMMON.search' | translate}}
@@ -170,6 +170,9 @@
                             <color-sketch *ngIf="pickerEmployment" [color]="profile.colors.employment || 'grey'" (onChangeComplete)="setTheme('employment')" (onChange)="profile.colors.employment = $event.color.hex"></color-sketch>
                             <ion-item>
                                 <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.web" placeholder="{{'PROFILE.web' | translate}}"></ion-input>
+                            </ion-item>
+                            <ion-item>
+                                <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.about" placeholder="Título descripción"></ion-input>
                             </ion-item>
                             <ion-item>
                                 <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.description" placeholder="Reseña"></ion-input>

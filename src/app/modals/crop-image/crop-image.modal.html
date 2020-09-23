@@ -27,14 +27,17 @@
         </div>
     </ng-container>
     <ng-template #elseTemplate>
-        <image-cropper format="jpeg" [imageChangedEvent]="imageChangedEvent" imageQuality="80" (imageLoaded)="imageLoaded()" [maintainAspectRatio]="maintainAspectRatio" [aspectRatio]="aspect" [resizeToWidth]="300" format="jpg" (imageCropped)="imageCropped($event)"></image-cropper>
-        <ion-spinner *ngIf="!imageReady" name="bubbles" name="dots" class="spinner"></ion-spinner>
+        <image-cropper format="jpg" [imageChangedEvent]="imageChangedEvent" imageQuality="80" (imageLoaded)="imageLoaded()" [maintainAspectRatio]="maintainAspectRatio" [aspectRatio]="aspect" [resizeToWidth]="300" (imageCropped)="imageCropped($event)"></image-cropper>
+        <div *ngIf="isCover">
+            <image-cropper format="jpg" [imageChangedEvent]="imageChangedEvent" imageQuality="100" (imageLoaded)="imageLoadedDesktop()" [maintainAspectRatio]="maintainAspectRatio" [aspectRatio]="aspect" [resizeToWidth]="600" (imageCropped)="imageCroppedDesktop($event)"></image-cropper>
+        </div>
+        <ion-spinner *ngIf="!imageReady || !imageReadyDesktop && isCover" name="bubbles" name="dots" class="spinner"></ion-spinner>
     </ng-template>
 
 </ion-content>
 <ion-footer no-border>
     <ion-toolbar>
-        <ion-button [disabled]="!croppedImage || !imageReady" (click)="save()" shape="round">
+        <ion-button [disabled]="!croppedImage || !imageReady || !imageReadyDesktop" (click)="save()" shape="round">
             {{'COMMON.save' | translate}}
         </ion-button>
     </ion-toolbar>

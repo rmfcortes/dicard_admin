@@ -46,6 +46,7 @@ export class UserService {
         .subscribe((profile: MainProfile) => {
           profSub.unsubscribe()
           if (profile) {
+            this.uidService.setName(profile.name)
             this.uidService.setProfile(profile)
             this.uidService.setProfileEmpty(false)
           } else {

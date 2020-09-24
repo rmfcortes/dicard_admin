@@ -20,12 +20,15 @@ export interface MainProfile {
     web?: string;
     social_net?: Social[];
     addContact?: boolean;
-    description: string;
+    description: string[];
     type: string;
     about: string;
 }
 
 export interface Fonts {
+    aboutTitle: Font;
+    aboutDesc: Font;
+
     name: Font;
     emplyment: Font;
     contactLabel: Font;
@@ -39,6 +42,13 @@ export interface Fonts {
 }
 
 export interface Colors {
+    light: string;
+    primary: string;
+    contrast: string;
+
+    aboutDesc: string;
+    aboutTitle: string;
+
     address: string;
     background: string;
     backgroundGradient?: string;
@@ -62,7 +72,6 @@ export interface Colors {
     descriptionProduct: string;
     priceProduct: string;
     backgroundCard: string;
-    light: string;
 }
 
 export interface Contact {

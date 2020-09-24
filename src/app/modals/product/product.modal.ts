@@ -24,18 +24,23 @@ export class ProductModal implements OnInit {
 
   product_original: Product = {
     stock: true,
-    description: '',
+    description: [{
+      subHeader: '',
+      text: ['']
+    }],
     id: '',
     name: '',
     section: '',
     price: 1,
     url: '',
+    url_desktop: '',
     new: false,
     has_extras: false,
   }
 
   noPhoto = '../../../assets/img/no-image-cover.png'
   base64 = ''
+  base64Destop = ''
 
   saving = false
 
@@ -64,12 +69,14 @@ export class ProductModal implements OnInit {
   async cropImage(imageChangedEvent, aspect, maintainAspectRatio) {
     const modal = await this.modalCtrl.create({
       component: CropImageModal,
-      componentProps: {imageChangedEvent, aspect, maintainAspectRatio}
+      componentProps: {imageChangedEvent, aspect, maintainAspectRatio, isCover: true}
     })
     modal.onWillDismiss().then(resp => {
       if (resp.data) {
-        this.product.url = resp.data
-        this.base64 = resp.data.split('data:image/png;base64,')[1]
+        this.product.url = resp.data.mobile
+        this.base64 = resp.data.mobile.split('data:image/png;base64,')[1]
+        this.base64Destop = resp.data.desktop.split('data:image/png;base64,')[1]
+        this.pending_changes = true
       }
     })
     return await modal.present()
@@ -85,6 +92,10 @@ export class ProductModal implements OnInit {
     if (this.product.new) return
     if (!this.let_change) return
     this.pending_changes = true
+  }
+
+  lineChange(value: string, i: number, y: number) {
+    this.product.description[i].text[y] = value
   }
 
   // Actions
@@ -142,7 +153,6 @@ export class ProductModal implements OnInit {
     }
 
     this.product.name = this.product.name.trim()
-    this.product.description = this.product.description.trim()
     if (!this.product.name || !this.product.description || !this.product.price) {
       this.alertService.presentAlert('', 'Por favor completa todos los campos')
       return
@@ -155,7 +165,8 @@ export class ProductModal implements OnInit {
     this.saving = true
     try {
       if (this.base64) {
-        this.product = await this.productService.uploadPhoto(this.base64, this.product)
+        this.product.url = await this.productService.uploadPhoto(this.base64, this.product, 'mobile')
+        this.product.url_desktop = await this.productService.uploadPhoto(this.base64Destop, this.product, 'desktop')
         this.base64 = ''
       }
       if (this.oldSection && this.oldSection !== this.product.section) {

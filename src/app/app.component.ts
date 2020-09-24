@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
   ]
 
   orders = 0
+  name = ''
 
   constructor(
     private router: Router,
@@ -50,6 +51,8 @@ export class AppComponent implements OnInit {
 
   getProfile() {
     this.profileService.profile_sub.subscribe(profile => {
+      if (!profile) return
+      this.name = this.profileService.getName()
       if (profile && profile.type === 'products') {
         this.appPages.unshift(
           {

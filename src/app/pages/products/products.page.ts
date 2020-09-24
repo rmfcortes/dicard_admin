@@ -203,16 +203,21 @@ export class ProductsPage implements OnInit {
     if (product) {
       product.new = false
       oldSection = product.section
+      if (!product.description) product.description = [{subHeader: '', text: ['']}]
     } else {
       product = {
         code: '',
-        description: '',
+        description: [{
+          subHeader: '',
+          text: ['']
+        }],
         id: '',
         name: '',
         section: '',
         price: null,
         unit: '',
         url: '',
+        url_desktop: '',
         new: true,
         stock: true,
         has_extras: false,

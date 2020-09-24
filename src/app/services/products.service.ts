@@ -88,11 +88,11 @@ export class ProductsService {
     })
   }
 
-  uploadPhoto(photo: string, product: Product): Promise<any> {
+  uploadPhoto(photo: string, product: Product, src: string): Promise<any> {
     return new Promise (async (resolve, reject) => {
       const uid = this.uidService.getUid()
       if (!product.id) product.id = this.db.createPushId()
-      const ref = this.fireStorage.ref(`products/${uid}/${product.id}`)
+      const ref = this.fireStorage.ref(`products/${uid}/${product.id}/${src}`)
       const task = ref.putString( photo, 'base64', { contentType: 'image/jpeg'} )
 
       const p = new Promise ((resolver, rejecte) => {
@@ -100,8 +100,7 @@ export class ProductsService {
           finalize(async () => {
             const downloadURL = await ref.getDownloadURL().toPromise()
             task2.unsubscribe()
-            product.url = downloadURL
-            resolver(product)
+            resolver(downloadURL)
           })
           ).subscribe(
             x => { },

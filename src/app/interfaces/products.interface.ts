@@ -1,16 +1,22 @@
 export interface Product {
     code?: string;
-    description: string;
+    description: Paragraph[];
     id: string;
     name: string;
     section: string;
     price: number;
     unit?: string;
     url: string;
+    url_desktop: string;
     extras?: Extra[];
     has_extras: boolean;
     new: boolean;
     stock: boolean;
+}
+
+export interface Paragraph {
+    subHeader: string;
+    text: string[];
 }
 
 export interface Section {

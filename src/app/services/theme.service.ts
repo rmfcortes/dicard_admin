@@ -18,7 +18,7 @@ export class ThemeService {
   ) { }
 
   createFont(font: Font) {
-    return new Promise((resolve, reject) => {      
+    return new Promise((resolve, reject) => {
       const new_font = document.createElement('style')
       new_font.appendChild(document.createTextNode(`\
       @font-face {\
@@ -66,6 +66,14 @@ export class ThemeService {
     if (src === 'product_description' || src === 'all') colors.descriptionProduct ? themeWrapper.style.setProperty('--descripProdColor', colors.descriptionProduct) : themeWrapper.style.setProperty('--descripProdColor', 'grey')
     if (src === 'product_price' || src === 'all') colors.priceProduct ? themeWrapper.style.setProperty('--priceProdColor', colors.priceProduct) : themeWrapper.style.setProperty('--priceProdColor', 'black')
     if (src === 'background_card' || src === 'all') colors.backgroundCard ? themeWrapper.style.setProperty('--backgroundCardColor', colors.backgroundCard) : themeWrapper.style.setProperty('--backgroundCardColor', 'white')
+
+    if (src === 'light' || src === 'all') colors.light ? themeWrapper.style.setProperty('--lightColor', colors.light) : themeWrapper.style.setProperty('--lightColor', 'white')
+    if (src === 'contrast' || src === 'all') colors.contrast ? themeWrapper.style.setProperty('--contrastColor', colors.contrast) : themeWrapper.style.setProperty('--contrastColor', 'white')
+
+    if (src === 'aboutTitle' || src === 'all') colors.aboutTitle ? themeWrapper.style.setProperty('--aboutTitleColor', colors.aboutTitle) : themeWrapper.style.setProperty('--contrastColor', 'white')
+    if (src === 'aboutDesc' || src === 'all') colors.aboutDesc ? themeWrapper.style.setProperty('--aboutDescColor', colors.aboutDesc) : themeWrapper.style.setProperty('--contrastColor', 'white')
+
+
     this.uidService.setThemeInitialized()
   }
 
@@ -80,22 +88,30 @@ export class ThemeService {
       if (font.product_description) document.querySelector('body').style.setProperty('--fontDescription', font.product_description.family)
       if (font.product_price) document.querySelector('body').style.setProperty('--fontPrice', font.product_price.family)
       if (font.location) document.querySelector('body').style.setProperty('--fontLocation', font.location.family)
+
+      if (font.aboutTitle) document.querySelector('body').style.setProperty('--fontAboutTitle', font.aboutTitle.family)
+      if (font.aboutDesc) document.querySelector('body').style.setProperty('--fontAboutDesc', font.aboutDesc.family)
       this.updateFonts(font)
       this.uidService.setFontInitialized()
     }
   }
 
   setFonts(font: Fonts, src: string) {
-    if (font.name && src === 'name' || src === 'all') document.querySelector('body').style.setProperty('--fontName', font.name.family)
+    if (font.name && src === 'name' || src === 'all' || src === 'titles') document.querySelector('body').style.setProperty('--fontName', font.name.family)
     if (font.emplyment && src === 'emplyment' || src === 'all') document.querySelector('body').style.setProperty('--fontEmployment', font.emplyment.family)
-    if (font.contactLabel && src === 'contactLabel' || src === 'all') document.querySelector('body').style.setProperty('--fontContact', font.contactLabel.family)
-    if (font.follow && src === 'follow' || src === 'all') document.querySelector('body').style.setProperty('--fontFollow', font.follow.family)
-    if (font.header && src === 'header' || src === 'all') document.querySelector('body').style.setProperty('--fontHeader', font.header.family)
+    if (font.contactLabel && src === 'contactLabel' || src === 'all' || src === 'titles') document.querySelector('body').style.setProperty('--fontContact', font.contactLabel.family)
+    if (font.follow && src === 'follow' || src === 'all' || src === 'titles') document.querySelector('body').style.setProperty('--fontFollow', font.follow.family)
+    if (font.header && src === 'header' || src === 'all' || src === 'titles') document.querySelector('body').style.setProperty('--fontHeader', font.header.family)
     if (font.product_name && src === 'product_name' || src === 'all') document.querySelector('body').style.setProperty('--fontProductName', font.product_name.family)
     if (font.product_description && src === 'product_description' || src === 'all') document.querySelector('body').style.setProperty('--fontDescription', font.product_description.family)
     if (font.product_price && src === 'product_price' || src === 'all') document.querySelector('body').style.setProperty('--fontPrice', font.product_price.family)
-    if (font.location && src === 'location' || src === 'all') document.querySelector('body').style.setProperty('--fontLocation', font.location.family)
+    if (font.location && src === 'location' || src === 'all' || src === 'titles') document.querySelector('body').style.setProperty('--fontLocation', font.location.family)
     if (font.address && src === 'address' || src === 'all') document.querySelector('body').style.setProperty('--fontAddress', font.address.family)
+
+    if (font.address && src === 'aboutTitle' || src === 'all' || src === 'titles') document.querySelector('body').style.setProperty('--fontAboutTitle', font.aboutTitle.family)
+    if (font.address && src === 'aboutDesc' || src === 'all') document.querySelector('body').style.setProperty('--fontAboutDesc', font.aboutDesc.family)
+
+
     this.updateFonts(font)
   }
 

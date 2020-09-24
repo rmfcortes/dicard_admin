@@ -60,6 +60,13 @@ export class HomePage implements OnInit {
   ]
 
   pickerFont = false
+  picerFontTitles = false
+
+  pickerLight = false
+  pickerContrast = false
+
+  pickerAboutDesc = false
+  pickerAboutTitle = false
 
   pickerBack = false
   pickerBackGradient = false
@@ -78,6 +85,9 @@ export class HomePage implements OnInit {
   pickerFontContact = false
   pickerFontFollow = false
 
+  pickerFontAboutDesc = false
+  pickerFontAboutTitle = false
+
   showTheme = false
   showImages = false
   showAbout = false
@@ -91,11 +101,16 @@ export class HomePage implements OnInit {
   font_emplyment: null
   font_contactLabel: null
 
+  font_about_desc: null
+  font_about_title: null
+
   lastuid: string
 
   page = 'form'
   scrWidth: number
   hideMainCol = false
+
+  fontTitles: Font
 
   @HostListener('window:resize')
   getScreenSize() {
@@ -173,6 +188,13 @@ export class HomePage implements OnInit {
   setPrimary(color) {
     const contrast = this.contrast(color.rgb.r, color.rgb.g, color.rgb.b)
     const theme: Colors = {
+      contrast,
+      primary: color.hex,
+      light: this.adjust(color.hex, 150),
+
+      aboutTitle: color.hex,
+      aboutDesc: contrast,
+
       address: color.hex,
       background: this.profile.colors.background ? this.profile.colors.background : 'white',
       backgroundCard: this.profile.colors.backgroundCard ? this.profile.colors.backgroundCard : 'white',
@@ -194,7 +216,6 @@ export class HomePage implements OnInit {
       segmentButtonFocused: color.hex,
       segmentButtonFocusedText: contrast,
       textButtons: contrast, // icon contact text
-      light: this.adjust(color.hex, -90)
     }
     this.profile.colors = theme
     this.setTheme('all')
@@ -235,6 +256,9 @@ export class HomePage implements OnInit {
     })
     await this.themeService.createFont(font)
     this.profile.font = {
+      aboutTitle: font,
+      aboutDesc: font,
+
       contactLabel: font,
       follow: font,
       emplyment: font,
@@ -249,11 +273,38 @@ export class HomePage implements OnInit {
     this.themeService.setFonts(this.profile.font, 'all')
   }
 
+  async titlesFontChange(font: Font) {
+    const main = document.getElementById('fontPickerTitles')
+    main.click()
+    this.picerFontTitles = false
+    const archivos = Object.entries(font.files)
+    archivos.forEach((file: any) => {
+      const url = file[1].slice(4)
+      font.files[file[0]] = 'https' + url
+    })
+    await this.themeService.createFont(font)
+    this.profile.font.name = font
+    this.profile.font.header = font
+    this.profile.font.follow = font
+    this.profile.font.location = font
+    this.profile.font.aboutTitle = font
+    this.profile.font.contactLabel = font
+    console.log(this.profile.font);
+    this.themeService.setFonts(this.profile.font, 'titles')
+  }
+
+
   opendDialog(src: string) {
     if (this.pickerFont && src !== 'main') {
       const main = document.getElementById('fontPicker')
       this.pickerFont = false
       main.click()
+    }
+
+    if (this.picerFontTitles && src !== 'titles') {
+      const fontPickerTitles = document.getElementById('fontPickerTitles')
+      this.picerFontTitles = false
+      fontPickerTitles.click()
     }
 
     if (this.pickerFontName && src !== 'name') {
@@ -307,9 +358,17 @@ export class HomePage implements OnInit {
       this.pickerFontEmployment = false
       puesto.click()
     }
+    if (this.pickerFontAboutTitle) {
+      const aboutTitle = document.getElementById('fontPickerAboutTitle')
+      this.pickerFontAboutTitle = false
+      aboutTitle.click()
+    }
 
     if (!this.profile.font) {
       this.profile.font = {
+        aboutTitle: null,
+        aboutDesc: null,
+
         address: null,
         contactLabel: null,
         emplyment: null,

@@ -51,9 +51,25 @@
                     <ion-radio slot="end" [value]="false"></ion-radio>
                 </ion-item>
             </ion-radio-group>
+            <div *ngFor="let paragraph of product.description; let i = index">
+                <ion-item lines="none">
+                    <ion-label color="medium" position="floating">Subtítulo (opcional)</ion-label>
+                    <ion-input (ionChange)="formularioChange()" (keyup.enter)="$event.target.blur()" [(ngModel)]="paragraph.subHeader" type="text" [name]="'sub'+i"></ion-input>
+                </ion-item>
+                <ion-item lines="none" *ngFor="let line of paragraph.text; let y = index">
+                    <ion-label color="medium" position="floating">Descripción (párrafo)</ion-label>
+                    <ion-textarea (ionChange)="lineChange($event.detail.value, i, y)" [autoGrow]="true" (keyup.enter)="$event.target.blur()" [(ngModel)]="product.description[i].text[y]" type="text" [name]="'text'+i+'line'+y" minlength="5"></ion-textarea>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-button (click)="paragraph.text.push('')" slot="end" shape="round">
+                        Agregar renglón
+                    </ion-button>
+                </ion-item>
+            </div>
             <ion-item>
-                <ion-label color="medium" position="floating">{{'PRODUCTS.description' | translate}}</ion-label>
-                <ion-textarea (ionChange)="formularioChange()" autoGrow="true" (keyup.enter)="$event.target.blur();" [(ngModel)]="product.description" type="text" name="description" minlength="5"></ion-textarea>
+                <ion-button (click)="product.description.push({subHeader: '', text: ['']})" slot="end" shape="round">
+                    Agregar párrafo
+                </ion-button>
             </ion-item>
             <ion-item>
                 <ion-label color="medium">{{'PRODUCTS.section' | translate}}</ion-label>

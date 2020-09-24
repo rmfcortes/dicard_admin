@@ -115,6 +115,16 @@ ion-card {
     font-family: var(--fontFollow);
 }
 
+.aboutTitle {
+    color: var(--aboutTitleColor);
+    font-family: var(--fontAboutTitle);
+}
+
+.aboutDesc {
+    color: var(--aboutDescColor);
+    font-family: var(--fontAboutDesc);
+}
+
 .location {
     color: var(--locationColor);
     font-family: var(--fontLocation);

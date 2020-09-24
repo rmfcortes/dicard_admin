@@ -18,7 +18,16 @@ export class UidService {
       lng: null,
       name: ''
     }],
+    about: '',
+    cover_desktop: '',
     colors: {
+      light: '',
+      primary: '',
+      contrast: '',
+
+      aboutDesc: '',
+      aboutTitle: '',
+
       address: '',
       background: '',
       backgroundCard: '',
@@ -38,7 +47,8 @@ export class UidService {
       priceProduct: '',
       segmentButton: '',
       segmentButtonFocused: '',
-      textButtons: ''
+      textButtons: '',
+      segmentButtonFocusedText: ''
     },
     font: null,
     company: '',
@@ -54,7 +64,7 @@ export class UidService {
     view: 'list-img',
     whatsApp: '',
     social_net: [],
-    description: '',
+    description: [],
     type: ''
   }
 

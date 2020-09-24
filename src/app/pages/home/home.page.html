@@ -50,10 +50,26 @@
                             <!-- Primary color -->
                             <ion-item>
                                 <ion-label color="medium">{{'PROFILE.primary' | translate}}</ion-label>
-                                <div class="colorPicker" [style.background]="profile.colors.fillButtons" (click)="pickerBorders= true"> {{profile.colors.fillButtons}}</div>
+                                <div class="colorPicker" [style.background]="profile.colors.primary" (click)="pickerBorders= true"> {{profile.colors.primary}}</div>
                                 <ion-icon style="cursor: pointer;" *ngIf="pickerBorders" slot="end" name="close" color="primary" (click)="pickerBorders = false"></ion-icon>
                             </ion-item>
-                            <color-sketch *ngIf="pickerBorders" [color]="profile.colors.fillButtons || 'black'" (onChangeComplete)="setPrimary($event.color)" (onChange)="profile.colors.fillButtons = $event.color.hex"></color-sketch>
+                            <color-sketch *ngIf="pickerBorders" [color]="profile.colors.primary || 'black'" (onChangeComplete)="setPrimary($event.color)" (onChange)="profile.colors.primary = $event.color.hex"></color-sketch>
+
+                            <!-- Contrast color -->
+                            <ion-item>
+                                <ion-label color="medium">Contraste</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.contrast" (click)="pickerContrast= true"> {{profile.colors.contrast}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerContrast" slot="end" name="close" color="primary" (click)="pickerContrast = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerContrast" [color]="profile.colors.contrast || 'black'" (onChangeComplete)="setTheme('contrast')" (onChange)="profile.colors.contrast = $event.color.hex"></color-sketch>
+
+                            <!-- Light color -->
+                            <ion-item>
+                                <ion-label color="medium">Light</ion-label>
+                                <div class="colorPicker" [style.background]="profile.colors.light" (click)="pickerLight= true"> {{profile.colors.light}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerLight" slot="end" name="close" color="primary" (click)="pickerLight = false"></ion-icon>
+                            </ion-item>
+                            <color-sketch *ngIf="pickerLight" [color]="profile.colors.light || 'black'" (onChangeComplete)="setTheme('light')" (onChange)="profile.colors.light = $event.color.hex"></color-sketch>
 
                             <!-- Font -->
                             <ion-item>
@@ -66,6 +82,18 @@
                                 </ng-template>
                             </ion-item>
                             <div (fontPickerChange)="mainFontChange($event)" [fpSizeSelect]="false" [(fontPicker)]="profile.font" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;" #fontPicker id="fontPicker">
+                            </div>
+
+                            <ion-item>
+                                <ion-label color="medium">Tipografía títulos</ion-label>
+                                <ng-container *ngIf="!picerFontTitles else picerFontTitlesTemplate">
+                                    <ion-icon (click)="opendDialog('titles')" style="cursor: pointer;" slot="end" src="../../../assets/icons/font-solid.svg" (click)="fontPickerTitles.click()" (click)="picerFontTitles = true"></ion-icon>
+                                </ng-container>
+                                <ng-template #picerFontTitlesTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontPickerTitles.click()" (click)="picerFontTitles = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontPickerTitles id="fontPickerTitles" (fontPickerChange)="titlesFontChange($event)" [fpSizeSelect]="false" [(fontPicker)]="fontTitles" [fpWidth]="'320px'" [fpPosition]="'bottom'" [fpDialogDisplay]="'static'" style="z-index: 30;">
                             </div>
 
                             <!-- Background -->
@@ -173,10 +201,39 @@
                             </ion-item>
                             <ion-item>
                                 <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.about" placeholder="Título descripción"></ion-input>
+                                <div class="colorPicker" [style.background]="profile.colors.aboutTitle" (click)="pickerAboutTitle= true"> {{profile.colors.aboutTitle}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerAboutTitle" slot="end" name="close" color="primary" (click)="pickerAboutTitle = false"></ion-icon>
+                                <ng-container *ngIf="!pickerFontAboutTitle else pickerFontAboutTitleTemplate">
+                                    <ion-icon (click)="opendDialog('puesto')" (click)="fontPickerAboutTitle.click()" (click)="pickerFontAboutTitle = true" src="../../../assets/icons/font-solid.svg" style="cursor: pointer;" slot="end"></ion-icon>
+                                </ng-container>
+                                <ng-template #pickerFontAboutTitleTemplate>
+                                    <ion-icon slot="end" name="close" color="primary" (click)="fontPickerAboutTitle.click()" (click)="pickerFontAboutTitle = false" style="cursor: pointer"></ion-icon>
+                                </ng-template>
+                            </ion-item>
+                            <div #fontPickerAboutTitle id="fontPickerAboutTitle" (fontPickerChange)="changeFont('aboutTitle', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_about_title" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerAboutTitle" [color]="profile.colors.aboutTitle || 'grey'" (onChangeComplete)="setTheme('aboutTitle')" (onChange)="profile.colors.aboutTitle = $event.color.hex"></color-sketch>
+                            <ion-item *ngFor="let item of profile.description; let first = first; let i = index" lines="none">
+                                <ion-textarea [autoGrow]="true" (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.description[i]" placeholder="Reseña"></ion-textarea>
+                                <div class="colorPicker" [style.background]="profile.colors.aboutDesc" (click)="pickerAboutDesc= true" *ngIf="first"> {{profile.colors.aboutDesc}}</div>
+                                <ion-icon style="cursor: pointer;" *ngIf="pickerAboutDesc && first" slot="end" name="close" color="primary" (click)="pickerAboutDesc = false"></ion-icon>
+                                <div *ngIf="first">
+                                    <ng-container *ngIf="!pickerFontAboutDesc else pickerFontAboutDescTemplate">
+                                        <ion-icon (click)="opendDialog('puesto')" (click)="fontPickerAboutDesc.click()" (click)="pickerFontAboutDesc = true" src="../../../assets/icons/font-solid.svg" style="cursor: pointer;" slot="end"></ion-icon>
+                                    </ng-container>
+                                    <ng-template #pickerFontAboutDescTemplate>
+                                        <ion-icon slot="end" name="close" color="primary" (click)="fontPickerAboutDesc.click()" (click)="pickerFontAboutDesc = false" style="cursor: pointer"></ion-icon>
+                                    </ng-template>
+                                </div>
                             </ion-item>
                             <ion-item>
-                                <ion-input (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.description" placeholder="Reseña"></ion-input>
+                                <ion-button (click)="profile.description.push('')" slot="end" shape="round">
+                                    Agregar renglón
+                                </ion-button>
                             </ion-item>
+                            <div #fontPickerAboutDesc id="fontPickerAboutDesc" (fontPickerChange)="changeFont('aboutDesc', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_about_title" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;">
+                            </div>
+                            <color-sketch *ngIf="pickerAboutDesc" [color]="profile.colors.aboutDesc || 'grey'" (onChangeComplete)="setTheme('aboutDesc')" (onChange)="profile.colors.aboutDesc = $event.color.hex"></color-sketch>
                         </ng-container>
 
                     </ion-card>

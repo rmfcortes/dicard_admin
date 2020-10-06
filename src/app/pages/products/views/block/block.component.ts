@@ -21,13 +21,12 @@ export class BlockComponent implements OnInit {
 
   public myOptions: NgxMasonryOptions = {
     gutter: 10
-  };
+  }
 
   constructor(
   ) { }
 
   ngOnInit() {
-    console.log(this.sections);
   }
 
   presentProduct(product: Product) {

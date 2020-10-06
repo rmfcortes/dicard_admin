@@ -48,9 +48,13 @@ export class ProductsService {
     })
   }
 
-  editSection(i: number, name: string) {
+  editSection(newSection: string, oldSection: string) {
     const uid = this.uidService.getUid()
-    this.db.object(`principal/${uid}/sections/${i+1}/name`).set(name)
+    const prodSub = this.db.object(`principal/${uid}/products/${oldSection}`).valueChanges().subscribe((products: Product[]) => {
+      prodSub.unsubscribe()
+      if (products) this.db.object(`principal/${uid}/products/${newSection}`).set(products)
+      this.db.object(`principal/${uid}/products/${oldSection}`).remove()
+    })
   }
 
   removeSection(section: string) {

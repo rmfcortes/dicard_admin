@@ -37,7 +37,7 @@
 </ion-content>
 <ion-footer no-border>
     <ion-toolbar>
-        <ion-button [disabled]="!croppedImage || !imageReady || !imageReadyDesktop" (click)="save()" shape="round">
+        <ion-button [disabled]="!croppedImage || !imageReady || !imageReadyDesktop && isCover" (click)="save()" shape="round">
             {{'COMMON.save' | translate}}
         </ion-button>
     </ion-toolbar>

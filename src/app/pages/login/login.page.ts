@@ -85,7 +85,7 @@ export class LoginPage implements OnInit {
     this.authService.signInWithEmail(this.form.value)
     .then(() => {
       this.alertService.dismissLoading()
-      this.router.navigate(['home'], {replaceUrl: true, skipLocationChange: true})
+      this.router.navigate(['home'], {replaceUrl: true})
     })
     .catch((err) => {
       this.alertService.dismissLoading()
@@ -162,7 +162,7 @@ export class LoginPage implements OnInit {
     this.authService.createUserWithEmailAndPassword(this.formSignUp.value)
     .then(() => {
       this.alertService.dismissLoading()
-      this.router.navigate(['home'], {replaceUrl: true, skipLocationChange: true})
+      this.router.navigate(['home'], {replaceUrl: true})
     })
     .catch((err) => {
       this.alertService.dismissLoading()

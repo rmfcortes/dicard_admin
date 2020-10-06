@@ -94,8 +94,8 @@ export class ProductModal implements OnInit {
     this.pending_changes = true
   }
 
-  lineChange(value: string, i: number, y: number) {
-    this.product.description[i].text[y] = value
+  lineChange(value: string, i: number, y: number, id) {
+
   }
 
   // Actions
@@ -187,7 +187,7 @@ export class ProductModal implements OnInit {
 
   deleteProduct() {
     this.translateService.get(['COMMON.delete', 'COMMON.sure', 'COMMON.cancel', 'COMMON.ok']).subscribe(text => {
-      this.alertService.presentAlertAction(text['COMMON.delete'] + ' ' +this.product.name, text['COMMON.sure'], text['COMMON.cancel'], text['COMMON.ok'])
+      this.alertService.presentAlertAction(text['COMMON.delete'] + ' ' +this.product.name, text['COMMON.sure'], 'Eliminar producto', 'Conservar')
       .then(resp => {
         if (resp) {
           this.productService.deleteProduct(this.product)
@@ -221,6 +221,10 @@ export class ProductModal implements OnInit {
     copia.name = producto.name
     copia.price = producto.price
     copia.id = producto.id
+  }
+
+  trackDesc(index: number, el: string): number {
+    return index;
   }
 
 }

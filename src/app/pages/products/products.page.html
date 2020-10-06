@@ -39,6 +39,17 @@
                         </ion-item>
                     </ion-card>
 
+                    <!-- Type selector -->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">Tipo</ion-label>
+                            <ion-select [(ngModel)]="profile.type" color="medium" okText="{{'COMMON.ok' | translate}}" cancelText="{{'COMMON.cancel' | translate}}" (ionChange)="saveColor()">
+                                <ion-select-option value="products">PRODUCTOS</ion-select-option>
+                                <ion-select-option value="services">SERVICIOS</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-card>
+
 
                     <!-- Section list -->
                     <ion-card>
@@ -60,7 +71,7 @@
                                 <ng-container *ngIf="section.edit; else editTemplate">
                                     <ion-input [(ngModel)]="section.name" #inputSectionEdit></ion-input>
                                     <ion-reorder slot="end"></ion-reorder>
-                                    <ion-icon slot="end" name="save" color="success" (click)="saveEditSection()"></ion-icon>
+                                    <ion-icon slot="end" name="save" color="success" (click)="saveEditSection(section.name)"></ion-icon>
                                     <ion-icon slot="end" name="close" color="danger" (click)="cancelEdit(i)"></ion-icon>
                                 </ng-container>
                                 <ng-template #editTemplate>

@@ -139,22 +139,21 @@ export class ProductsPage implements OnInit {
         products: []
       }
     }
-    this.productService.updateSections(this.sections);
+    this.productService.updateSections(this.sections)
     this.newSection = ''
     this.viewSectionInput = false
   }
 
   editSection(i: number) {
     this.unselectEdit()
-    this.beforeEdit = this.sections[i].name
     this.sections[i].edit = true
-    setTimeout(() => {
-      this.inputSectionEdit.setFocus()
-    }, 300)
+    this.beforeEdit = this.sections[i].name
+    setTimeout(() => this.inputSectionEdit.setFocus(), 300)
   }
 
-  saveEditSection() {
+  saveEditSection(newSection: string) {
     this.unselectEdit()
+    this.productService.editSection(newSection, this.beforeEdit)
     this.beforeEdit = ''
     this.productService.updateSections(this.sections)
   }
@@ -166,9 +165,7 @@ export class ProductsPage implements OnInit {
   }
 
   unselectEdit() {
-    this.sections.forEach(s => {
-      s.edit = null
-    })
+    this.sections.forEach(s => s.edit = null)
   }
 
   async removeSection(i: number, section: string) {

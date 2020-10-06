@@ -57,13 +57,13 @@
 
 <ion-item lines="none" style="text-align: center; margin: 0.75rem 0 0 0;">
     <ion-label>
-        <h2 class="ion-text-wrap aboutTitle">{{profile.about | titlecase}}</h2>
+        <h2 class="ion-text-wrap aboutTitle">{{profile.about}}</h2>
     </ion-label>
 </ion-item>
 <app-separador-estrella [src]="'follow'"></app-separador-estrella>
 <ion-item lines="none" style="text-align: center; margin-bottom: 2rem;">
     <ion-label class="ion-text-wrap">
-        <p class="ion-text-wrap aboutDesc" *ngFor="let item of profile.description">{{item | titlecase}}</p>
+        <p class="ion-text-wrap aboutDesc" *ngFor="let item of profile.description">{{item}}</p>
     </ion-label>
 </ion-item>
 

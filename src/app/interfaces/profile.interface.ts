@@ -77,6 +77,8 @@ export interface Colors {
 export interface Contact {
     action: string;
     icon: string;
+    label: string;
+    value: string;
 }
 
 export interface Address {

@@ -213,7 +213,7 @@
                             <div #fontPickerAboutTitle id="fontPickerAboutTitle" (fontPickerChange)="changeFont('aboutTitle', $event)" [fpSizeSelect]="false" [(fontPicker)]="font_about_title" [fpWidth]="'320px'" [fpPosition]="'top'" [fpDialogDisplay]="'static'" style="z-index: 30;">
                             </div>
                             <color-sketch *ngIf="pickerAboutTitle" [color]="profile.colors.aboutTitle || 'grey'" (onChangeComplete)="setTheme('aboutTitle')" (onChange)="profile.colors.aboutTitle = $event.color.hex"></color-sketch>
-                            <ion-item *ngFor="let item of profile.description; let first = first; let i = index" lines="none">
+                            <ion-item *ngFor="let item of profile.description; let first = first; let i = index; trackBy: trackDesc" lines="none">
                                 <ion-textarea [autoGrow]="true" (ionBlur)="save()" style="width: 75%;" type="text" [(ngModel)]="profile.description[i]" placeholder="Reseña"></ion-textarea>
                                 <div class="colorPicker" [style.background]="profile.colors.aboutDesc" (click)="pickerAboutDesc= true" *ngIf="first"> {{profile.colors.aboutDesc}}</div>
                                 <ion-icon style="cursor: pointer;" *ngIf="pickerAboutDesc && first" slot="end" name="close" color="primary" (click)="pickerAboutDesc = false"></ion-icon>
@@ -227,7 +227,7 @@
                                 </div>
                             </ion-item>
                             <ion-item>
-                                <ion-button (click)="profile.description.push('')" slot="end" shape="round">
+                                <ion-button (click)="pushLine()" slot="end" shape="round">
                                     Agregar renglón
                                 </ion-button>
                             </ion-item>

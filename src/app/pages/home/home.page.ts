@@ -424,6 +424,11 @@ export class HomePage implements OnInit {
 
   // Validate phone
 
+  pushLine() {
+    if (!this.profile.description) this.profile.description = ['']
+    else this.profile.description.push('')
+  }
+
   phoneChange(event, origin) {
     if (!this.profile.contact) this.profile.contact = []
     if (event.detail.value.length === 10) {
@@ -434,6 +439,8 @@ export class HomePage implements OnInit {
           this.profile.contact[this.profile.contact.length] = {
             action: 'call',
             icon: 'call',
+            label: 'Teléfono',
+            value: event.detail.value
           }
         }
       } else {
@@ -443,6 +450,8 @@ export class HomePage implements OnInit {
           this.profile.contact[this.profile.contact.length] = {
             action: 'whats',
             icon: 'logo-whatsapp',
+            label: 'Whatsapp',
+            value: event.detail.value
           }
         }
       }
@@ -464,6 +473,8 @@ export class HomePage implements OnInit {
         this.profile.contact[this.profile.contact.length] = {
           action: 'email',
           icon: 'mail',
+          label: 'Correo',
+          value: this.profile.email
         }
       }
     } else {
@@ -481,6 +492,8 @@ export class HomePage implements OnInit {
         this.profile.contact[this.profile.contact.length] = {
           action: 'addContact',
           icon: 'person-add',
+          label: 'Agregar a contactos',
+          value: null
         }
       }
     } else {
@@ -514,6 +527,10 @@ export class HomePage implements OnInit {
   reset() {
     this.profile = JSON.parse(JSON.stringify(this.oldProfile))
 
+  }
+
+  trackDesc(index: number, el: string): number {
+    return index;
   }
 
 }

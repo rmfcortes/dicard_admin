@@ -16,14 +16,15 @@ export class ThirdComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   emit(action: string) {
     this.contact.emit(action)
   }
 
   goPage(page: string) {
-    this.social.emit(page);
+    this.social.emit(page)
   }
 
 }

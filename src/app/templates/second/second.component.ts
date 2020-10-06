@@ -30,7 +30,7 @@ export class SecondComponent implements OnInit {
   }
 
   goPage(page: string) {
-    this.social.emit(page);
+    this.social.emit(page)
   }
 
 }

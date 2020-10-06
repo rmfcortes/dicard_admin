@@ -56,9 +56,9 @@
                     <ion-label color="medium" position="floating">Subtítulo (opcional)</ion-label>
                     <ion-input (ionChange)="formularioChange()" (keyup.enter)="$event.target.blur()" [(ngModel)]="paragraph.subHeader" type="text" [name]="'sub'+i"></ion-input>
                 </ion-item>
-                <ion-item lines="none" *ngFor="let line of paragraph.text; let y = index">
+                <ion-item lines="none" *ngFor="let line of paragraph.text; let y = index; trackBy: trackDesc">
                     <ion-label color="medium" position="floating">Descripción (párrafo)</ion-label>
-                    <ion-textarea (ionChange)="lineChange($event.detail.value, i, y)" [autoGrow]="true" (keyup.enter)="$event.target.blur()" [(ngModel)]="product.description[i].text[y]" type="text" [name]="'text'+i+'line'+y" minlength="5"></ion-textarea>
+                    <ion-input (ionChange)="lineChange($event.detail.value, i, y)" (keyup.enter)="$event.target.blur()" [(ngModel)]="product.description[i].text[y]" type="text" [name]="'text'+i+'line'+y" minlength="5"></ion-input>
                 </ion-item>
                 <ion-item lines="none">
                     <ion-button (click)="paragraph.text.push('')" slot="end" shape="round">
@@ -92,7 +92,7 @@
                             <ion-icon name="trash" color="medium"></ion-icon>
                         </ion-button>
                     </ion-list-header>
-                    <ion-grid fixed class="escritorio">
+                    <ion-grid fixed class="desktop">
                         <ion-row>
                             <ion-col size="6">
                                 <ion-item lines="none" class="contraste">

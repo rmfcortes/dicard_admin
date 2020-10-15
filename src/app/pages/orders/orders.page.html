@@ -15,14 +15,19 @@
     <ion-grid fixed>
         <ion-row>
             <ion-col size-lg="4" size-xl="4" size-xs="12" size-sm="12" size-md="12" class="separate-scroll" *ngIf="!hideMainCol || scrWidth >= 992">
-                <ion-list *ngIf="orders.length > 0">
-                    <ion-item lines="none" detail (click)="seeOrder(item)" *ngFor="let item of orders; trackBy: trackOrders; let odd = odd" [ngClass]="{'contraste': odd}" style="cursor: pointer;">
-                        <ion-label class="ion-text-wrap">
-                            <h2>{{(item.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</h2>
-                            <p>{{item.customer.direccion.address}}</p>
-                        </ion-label>
-                    </ion-item>
-                </ion-list>
+                <div *ngIf="orderBranch.length > 0;">
+                    <ion-list *ngFor="let item of orderBranch; trackBy: trackBracnOrders">
+                        <ion-list-header color="primary" *ngIf="item.orders.length > 0">
+                            <ion-label>{{item.name}}</ion-label>
+                        </ion-list-header>
+                        <ion-item lines="none" detail (click)="seeOrder(order)" *ngFor="let order of item.orders; let odd = odd; trackBy: trackOrders" [ngClass]="{'contraste': odd}" style="cursor: pointer;">
+                            <ion-label class="ion-text-wrap">
+                                <h2>{{(order.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</h2>
+                                <p>{{order.customer.direccion.address}}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                </div>
             </ion-col>
             <ion-col size-lg="8" size-xl="8" size-xs="12" size-sm="12" size-md="12" *ngIf="order">
                 <div>
@@ -79,7 +84,7 @@
                             Regresar
                         </ion-button>
                         <ion-button (click)="complete()" slot="end">
-                            Enviar a Historial
+                            Orden completada
                         </ion-button>
                     </ion-item>
                 </div>

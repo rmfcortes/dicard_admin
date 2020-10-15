@@ -388,6 +388,7 @@ export class HomePage implements OnInit {
 
   saveTemplate() {
     if (this.profile.template) this.userService.setProfile(this.profile)
+    if (this.profile.template_desktop) this.userService.setProfile(this.profile)
   }
 
   // Crop cover or photo

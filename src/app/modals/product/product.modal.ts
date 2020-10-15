@@ -94,7 +94,7 @@ export class ProductModal implements OnInit {
     this.pending_changes = true
   }
 
-  lineChange(value: string, i: number, y: number, id) {
+  lineChange(value: string, i: number, y: number) {
 
   }
 

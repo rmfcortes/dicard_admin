@@ -9,6 +9,7 @@ export interface MainProfile {
     photo: string;
     name: string;
     template: string;
+    template_desktop;
     cover: string;
     cover_desktop: string;
     vertical_cover: string;
@@ -99,4 +100,9 @@ export interface Social {
 export interface Sucursal {
     name: string
     location: Address
+}
+
+export interface Restricted {
+    coverage: string[]
+    master: string
 }

@@ -38,6 +38,18 @@
                         </ion-item>
                     </ion-card>
 
+
+                    <!-- Template Desktop-->
+                    <ion-card>
+                        <ion-item>
+                            <ion-label color="medium">Plantilla Escritorio</ion-label>
+                            <ion-select [(ngModel)]="profile.template_desktop" color="medium" okText="{{'COMMON.ok' | translate}}" cancelText="{{'COMMON.cancel' | translate}}" (ionChange)="saveTemplate()">
+                                <ion-select-option value="first">{{'PROFILE.first' | translate}}</ion-select-option>
+                                <ion-select-option value="second">{{'PROFILE.second' | translate}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-card>
+
                     <!-- Theme -->
                     <ion-card>
                         <ion-item>

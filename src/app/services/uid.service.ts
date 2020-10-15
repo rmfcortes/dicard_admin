@@ -61,6 +61,7 @@ export class UidService {
     phone: '',
     photo: '',
     template: 'first',
+    template_desktop: 'first',
     view: 'list-img',
     whatsApp: '',
     social_net: [],

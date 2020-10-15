@@ -43,6 +43,7 @@ export interface Customer {
 
 export interface Order {
     accepted: boolean
+    branch: Address
     customer: Customer
     comision: number
     createdAt: number

@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 
 import { OrdersService } from 'src/app/services/orders.service';
 import { UserService } from 'src/app/services/user.service';
@@ -13,8 +14,7 @@ import { Order } from 'src/app/interfaces/cart.interface';
 })
 export class OrdersPage implements OnInit {
   
-
-  orders: Order[] = []
+  orderBranch: OrderBranch[] = []
   order: Order
 
   scrWidth: number
@@ -28,26 +28,47 @@ export class OrdersPage implements OnInit {
   }
 
   constructor(
+    private menu: MenuController,
     private orderService: OrdersService,
     private userService: UserService,
   ) { this.getScreenSize() }
 
   ngOnInit() {
-    this.getProfile()
+    this.isRestricted()
+  }
+
+  ionViewWillEnter() {
+    this.menu.enable(true)
+  }
+
+  isRestricted() {
+    this.orderService.restricted_subject.subscribe(res => {
+      this.orderBranch = []
+      if (!res) this.getProfile()
+      else {
+        res.coverage.forEach(c => this.orderBranch.push({name: c, orders: []}))
+        this.orderService.listenOrdersRestricted(res.master, res.coverage)
+        this.listenPedidos()
+      }
+    })
   }
 
   getProfile() {
     this.userService.getProfile()
     .then(async (profile) => {
+      if (!profile.name) return
+      this.orderBranch = []
       this.profile = profile
+      this.profile.address.forEach(a => this.orderBranch.push({name: a.name, orders: []}))
       this.listenPedidos()
     })
   }
-
+  
   listenPedidos() {
     this.orderService.orders_subject.subscribe(orders => {
-      this.orders = orders
-      this.orders.sort((a, b) => b.createdAt - a.createdAt)
+      orders.sort((a, b) => b.createdAt - a.createdAt)
+      this.orderBranch.forEach(o => o.orders = orders.filter(or => or.branch.name === o.name))
+      console.log(this.orderBranch);
     })
   }
 
@@ -68,8 +89,18 @@ export class OrdersPage implements OnInit {
 
   // Tracks
 
+  trackBracnOrders(index: number, el: OrderBranch): string {
+    return el.name
+  }
+
   trackOrders(index: number, el: Order): string {
     return el.id
   }
 
+}
+
+
+export interface OrderBranch {
+  name: string;
+  orders: Order[]
 }

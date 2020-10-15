@@ -5,6 +5,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { UidService } from './uid.service';
 
 import { Order } from '../interfaces/cart.interface';
+import { Restricted } from '../interfaces/profile.interface';
 
 
 @Injectable({
@@ -14,6 +15,7 @@ export class OrdersService {
 
   orders: Order[] = []
   orders_subject = new BehaviorSubject<Order[]>(this.orders)
+  restricted_subject = new BehaviorSubject<Restricted>(null)
 
   orderSub: Subscription
 
@@ -21,6 +23,27 @@ export class OrdersService {
     private db: AngularFireDatabase,
     private uidService: UidService,
   ) { }
+
+  isRestricted() {
+    const uid = this.uidService.getUid()
+    const auth = this.uidService.getAuthChecked()
+    if (!uid || !auth) return setTimeout(() => this.isRestricted(), 100)
+    const resSub = this.db.object(`restrict/${uid}`).valueChanges().subscribe((res: Restricted) => {
+      resSub.unsubscribe()
+      this.restricted_subject.next(res)
+    })
+  }
+
+  listenOrdersRestricted(uid: string, branchs: string[]) {
+    this.orderSub = this.db.list(`orders/${uid}`).valueChanges().subscribe((orders: Order[]) => {
+      this.orders = []
+      for (const branch of branchs) {
+        const fil = orders.filter(o => o.branch.name === branch)
+        this.orders = this.orders.concat(fil)
+      }
+      this.orders_subject.next(this.orders)
+    })
+  }
 
   listenOrders() {
     const uid = this.uidService.getUid()

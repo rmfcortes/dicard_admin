@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
+import { OrdersService } from 'src/app/services/orders.service';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginPage implements OnInit {
   constructor(
     private router: Router,
     private menu: MenuController,
+    private orderService: OrdersService,
     private alertService: AlertService,
     private userService: UserService,
     private authService: AuthService,
@@ -85,7 +87,8 @@ export class LoginPage implements OnInit {
     this.authService.signInWithEmail(this.form.value)
     .then(() => {
       this.alertService.dismissLoading()
-      this.router.navigate(['home'], {replaceUrl: true})
+      this.orderService.isRestricted()
+      this.router.navigate(['orders'], {replaceUrl: true})
     })
     .catch((err) => {
       this.alertService.dismissLoading()

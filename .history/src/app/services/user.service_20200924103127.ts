@@ -46,9 +46,9 @@ export class UserService {
         .subscribe((profile: MainProfile) => {
           profSub.unsubscribe()
           if (profile) {
-            this.uidService.setProfileEmpty(false)
             this.uidService.setName(profile.name)
             this.uidService.setProfile(profile)
+            this.uidService.setProfileEmpty(false)
           } else {
             profile = this.uidService.getProfile()
             this.setProfile(profile)
@@ -61,7 +61,6 @@ export class UserService {
         })
       } else {
         const profile = this.uidService.getProfile()
-        this.uidService.setProfileEmpty(false)
         this.setProfile(profile)
         resolve (profile)
       }

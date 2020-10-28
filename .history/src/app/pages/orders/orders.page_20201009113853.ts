@@ -68,6 +68,7 @@ export class OrdersPage implements OnInit {
     this.orderService.orders_subject.subscribe(orders => {
       orders.sort((a, b) => b.createdAt - a.createdAt)
       this.orderBranch.forEach(o => o.orders = orders.filter(or => or.branch.name === o.name))
+      console.log(this.orderBranch);
     })
   }
 

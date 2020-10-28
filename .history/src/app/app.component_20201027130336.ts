@@ -121,6 +121,7 @@ export class AppComponent implements OnInit {
         this.appPages.push(this.home)
         this.appPages.push(this.maps)
       }
+      console.log(this.appPages);
     })
   }
 

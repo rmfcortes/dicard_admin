@@ -80,11 +80,10 @@ export class AppComponent implements OnInit {
       this.appPages = []
       if (!res) this.getProfile()
       else {
-        this.name = this.profileService.getName()
-        this.router.navigate(['/orders'], {replaceUrl: true})
         this.appPages.push(this.orders_menu)
         this.orderService.listenOrdersRestricted(res.master, res.coverage)
         this.listenOrders()
+        this.router.navigate(['/orders'], {replaceUrl: true})
       }
     })
   }

@@ -20,7 +20,7 @@
                         <ion-list-header color="primary" *ngIf="item.orders.length > 0">
                             <ion-label>{{item.name}}</ion-label>
                         </ion-list-header>
-                        <ion-item lines="none" detail (click)="seeOrder(itemOrder)" *ngFor="let itemOrder of item.orders; let odd = odd; trackBy: trackOrders" [ngClass]="{'contraste': odd && order !== itemOrder, 'selected' : order === itemOrder}" style="cursor: pointer;">
+                        <ion-item lines="none" detail (click)="seeOrder(order)" *ngFor="let itemOrder of item.orders; let odd = odd; trackBy: trackOrders" [ngClass]="{'contraste': odd, 'selected' : order === item}" style="cursor: pointer;">
                             <ion-label class="ion-text-wrap">
                                 <h2>{{(itemOrder.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</h2>
                                 <p>{{itemOrder.customer.direccion.address}}</p>

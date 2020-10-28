@@ -91,6 +91,7 @@ export class AppComponent implements OnInit {
 
   getProfile() {
     this.profileService.profile_sub.subscribe(profile => {
+      console.log(profile);
       if (this.profileService.getProfileEmpty()) return
       this.appPages = []
       if (!profile) return

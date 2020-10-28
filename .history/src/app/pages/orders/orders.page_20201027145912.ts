@@ -43,6 +43,7 @@ export class OrdersPage implements OnInit {
 
   isRestricted() {
     this.orderService.restricted_subject.subscribe(res => {
+      console.log(res);
       this.orderBranch = []
       if (!res) this.getProfile()
       else {

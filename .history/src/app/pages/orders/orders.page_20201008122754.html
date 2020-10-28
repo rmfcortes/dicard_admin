@@ -20,10 +20,10 @@
                         <ion-list-header color="primary" *ngIf="item.orders.length > 0">
                             <ion-label>{{item.name}}</ion-label>
                         </ion-list-header>
-                        <ion-item lines="none" detail (click)="seeOrder(itemOrder)" *ngFor="let itemOrder of item.orders; let odd = odd; trackBy: trackOrders" [ngClass]="{'contraste': odd && order !== itemOrder, 'selected' : order === itemOrder}" style="cursor: pointer;">
+                        <ion-item lines="none" detail (click)="seeOrder(order)" *ngFor="let order of item.orders; let odd = odd; trackBy: trackOrders" [ngClass]="{'contraste': odd}" style="cursor: pointer;">
                             <ion-label class="ion-text-wrap">
-                                <h2>{{(itemOrder.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</h2>
-                                <p>{{itemOrder.customer.direccion.address}}</p>
+                                <h2>{{(order.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</h2>
+                                <p>{{order.customer.direccion.address}}</p>
                             </ion-label>
                         </ion-item>
                     </ion-list>
@@ -42,14 +42,13 @@
                         </ion-item>
                         <ion-item lines="none">
                             <ion-label>
+                                <h2 class="medium" *ngIf="order.payment.vendor === 'efectivo'"><strong style="color: black;">Forma pago:</strong>Efectivo</h2>
+                                <h2 class="medium" *ngIf="order.payment.vendor === 'terminal'"><strong style="color: black;">Forma pago:</strong>Terminal</h2>
+                                <h2 class="medium" *ngIf="order.payment.vendor !== 'efectivo' && order.payment.vendor !== 'terminal'"><strong style="color: black;">Forma pago:</strong>Pago en línea</h2>
                                 <h2 class="medium" *ngIf="order.comision"><strong style="color: black;">Comisión:</strong> {{order.comision | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
                                 <h2 class="medium"><strong style="color: black;">Envío:</strong> {{order.delivery_cost | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
                                 <h2 class="medium"><strong style="color: black;">Propina:</strong> {{order.tip | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
                             </ion-label>
-                            <ion-badge color="danger" style="font-size: x-large;" mode="ios" *ngIf="order.payment.vendor !== 'efectivo' && order.payment.vendor !== 'terminal'">PAGADO</ion-badge>
-                            <ion-badge color="primary" style="font-size: x-large;" mode="ios" *ngIf="order.payment.vendor === 'terminal'">Terminal</ion-badge>
-                            <ion-badge color="success" style="font-size: x-large;" mode="ios" *ngIf="order.payment.vendor === 'efectivo'">Efectivo</ion-badge>
-
                         </ion-item>
                     </ion-card>
 

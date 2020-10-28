@@ -77,6 +77,7 @@ export class AppComponent implements OnInit {
 
   isRestricted() {
     this.orderService.restricted_subject.subscribe(res => {
+      console.log(res);
       this.appPages = []
       if (!res) this.getProfile()
       else {
@@ -91,6 +92,7 @@ export class AppComponent implements OnInit {
 
   getProfile() {
     this.profileService.profile_sub.subscribe(profile => {
+      console.log(profile);
       if (this.profileService.getProfileEmpty()) return
       this.appPages = []
       if (!profile) return

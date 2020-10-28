@@ -77,21 +77,23 @@ export class AppComponent implements OnInit {
 
   isRestricted() {
     this.orderService.restricted_subject.subscribe(res => {
+      console.log(res);
       this.appPages = []
       if (!res) this.getProfile()
       else {
-        this.name = this.profileService.getName()
-        this.router.navigate(['/orders'], {replaceUrl: true})
         this.appPages.push(this.orders_menu)
         this.orderService.listenOrdersRestricted(res.master, res.coverage)
         this.listenOrders()
       }
+      console.log(this.appPages);
     })
   }
 
   getProfile() {
+    console.log('Profile');
     this.profileService.profile_sub.subscribe(profile => {
-      if (this.profileService.getProfileEmpty()) return
+      console.log(profile);
+      console.log(this.profileService.getProfileEmpty());
       this.appPages = []
       if (!profile) return
       this.name = this.profileService.getName()
@@ -121,6 +123,7 @@ export class AppComponent implements OnInit {
         this.appPages.push(this.home)
         this.appPages.push(this.maps)
       }
+      console.log(this.appPages);
     })
   }
 

@@ -60,8 +60,6 @@ export class AppComponent implements OnInit {
   orders = 0
   name = ''
 
-  restricted = false
-
   constructor(
     private router: Router,
     private languageService: LanguageService,
@@ -80,11 +78,8 @@ export class AppComponent implements OnInit {
   isRestricted() {
     this.orderService.restricted_subject.subscribe(res => {
       this.appPages = []
-      if (!res) {
-        this.restricted = false
-        this.getProfile()
-      } else {
-        this.restricted = true
+      if (!res) this.getProfile()
+      else {
         this.name = this.profileService.getName()
         this.router.navigate(['/orders'], {replaceUrl: true})
         this.appPages.push(this.orders_menu)
@@ -97,9 +92,8 @@ export class AppComponent implements OnInit {
   getProfile() {
     this.profileService.profile_sub.subscribe(profile => {
       if (this.profileService.getProfileEmpty()) return
-      if (this.restricted) return
-      this.appPages = []
       if (!profile) return
+      this.appPages = []
       this.name = this.profileService.getName()
 
       if (profile && profile.type === 'products') {
@@ -146,7 +140,6 @@ export class AppComponent implements OnInit {
   logOut() {
     this.orderService.stopListen()
     setTimeout(() => {
-      this.restricted = false
       this.authService.logout()
       this.router.navigate(['/login'], {replaceUrl: true})
     }, 350)

@@ -79,11 +79,10 @@ export class AppComponent implements OnInit {
 
   isRestricted() {
     this.orderService.restricted_subject.subscribe(res => {
+      console.log(res);
       this.appPages = []
-      if (!res) {
-        this.restricted = false
-        this.getProfile()
-      } else {
+      if (!res) this.getProfile()
+      else {
         this.restricted = true
         this.name = this.profileService.getName()
         this.router.navigate(['/orders'], {replaceUrl: true})
@@ -96,6 +95,7 @@ export class AppComponent implements OnInit {
 
   getProfile() {
     this.profileService.profile_sub.subscribe(profile => {
+      console.log(profile);
       if (this.profileService.getProfileEmpty()) return
       if (this.restricted) return
       this.appPages = []

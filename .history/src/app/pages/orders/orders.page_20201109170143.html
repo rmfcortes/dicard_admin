@@ -1,0 +1,102 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-menu-button *ngIf="!hideMainCol"></ion-menu-button>
+            <ion-button (click)="regresar()" *ngIf="hideMainCol">
+                <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>Pedidos</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+    <ion-grid fixed>
+        <ion-row>
+            <ion-col size-lg="4" size-xl="4" size-xs="12" size-sm="12" size-md="12" class="separate-scroll" *ngIf="!hideMainCol || scrWidth >= 992">
+                <div *ngIf="orderBranch.length > 0;">
+                    <ion-list *ngFor="let item of orderBranch; trackBy: trackBracnOrders">
+                        <ion-list-header color="primary" *ngIf="item.orders.length > 0">
+                            <ion-label>{{item.name}}</ion-label>
+                        </ion-list-header>
+                        <ion-item lines="none" detail (click)="seeOrder(itemOrder)" *ngFor="let itemOrder of item.orders; let odd = odd; trackBy: trackOrders" [ngClass]="{'contraste': odd && order !== itemOrder, 'selected' : order === itemOrder}" style="cursor: pointer;">
+                            <ion-label class="ion-text-wrap">
+                                <h1>{{itemOrder.idTrack}}</h1>
+                                <h2>{{(itemOrder.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</h2>
+                                <p>{{itemOrder.customer.direccion.address}}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+                </div>
+            </ion-col>
+            <ion-col size-lg="8" size-xl="8" size-xs="12" size-sm="12" size-md="12" *ngIf="order">
+                <div>
+                    <!-- Resumen pedido y contacto -->
+                    <ion-card>
+                        <h3 class="titulo">{{order.idTrack}}</h3>
+                        <ion-item lines="none">
+                            <ion-label>
+                                <h2 class="medium ion-text-wrap"><strong style="color: black;">Entregar en:</strong> {{order.customer.direccion.address}}</h2>
+                                <h2 *ngIf="order.customer.telefono" class="medium"><strong style="color: black;">Teléfono:</strong> {{order.customer.telefono}}</h2>
+                            </ion-label>
+                        </ion-item>
+                        <ion-item lines="none">
+                            <ion-label>
+                                <h2 class="medium" *ngIf="order.comision"><strong style="color: black;">Comisión:</strong> {{order.comision | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
+                                <h2 class="medium"><strong style="color: black;">Envío:</strong> {{order.delivery_cost | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
+                                <h2 class="medium"><strong style="color: black;">Propina:</strong> {{order.tip | currency : 'CAD': 'symbol-narrow': '1.0-2'}}</h2>
+                            </ion-label>
+                            <ion-badge color="danger" style="font-size: x-large;" mode="ios" *ngIf="order.payment.vendor !== 'efectivo' && order.payment.vendor !== 'terminal'">PAGADO</ion-badge>
+                            <ion-badge color="primary" style="font-size: x-large;" mode="ios" *ngIf="order.payment.vendor === 'terminal'">Terminal</ion-badge>
+                            <ion-badge color="success" style="font-size: x-large;" mode="ios" *ngIf="order.payment.vendor === 'efectivo'">Efectivo</ion-badge>
+
+                        </ion-item>
+                    </ion-card>
+
+                    <!-- Lista de productos -->
+                    <ion-card>
+                        <h3 class="titulo">Productos</h3>
+                        <ion-item *ngFor="let producto of order.products; let i = index; let odd = odd" [ngClass]="{'contraste': odd}" lines="none">
+                            <ion-badge color="dark" slot="start">{{producto.qty}}</ion-badge>
+                            <ion-thumbnail slot="start">
+                                <img [src]="producto.url">
+                            </ion-thumbnail>
+                            <ion-label>
+                                <h2 class="ion-text-wrap" style="font-weight: 700;">{{producto.name | titlecase}}
+                                    <ion-text color="medium">{{producto.price | currency:'CAD':'symbol-narrow':'1.0-2'}}</ion-text>
+                                </h2>
+                                <p>{{producto.comments | titlecase}}</p>
+                                <div *ngFor="let item of producto.extras">
+                                    <h4>+ {{item.header | titlecase}}</h4>
+                                    <p style="color: var(--ion-color-primary); margin-left: 0.5rem;" *ngFor="let com of item.products">{{com.name}}: {{com.price | currency:'CAD':'symbol-narrow':'1.0-2'}}</p>
+                                </div>
+                            </ion-label>
+                        </ion-item>
+                        <hr style="border-bottom: var(--ion-color-medium) 1px solid;">
+                        <ion-item style="text-align: right;" lines="none">
+                            <ion-label color="primary">
+                                <h2 style="font-weight: 700;">Total: {{order.total | currency:'CAD':'symbol-narrow':'1.0-2'}}</h2>
+                            </ion-label>
+                        </ion-item>
+                    </ion-card>
+
+                    <ion-item lines="none">
+                        <ion-button (click)="regresar()" slot="start" fill="outline">
+                            Regresar
+                        </ion-button>
+                        <ion-button (click)="complete()" slot="end">
+                            Orden completada
+                        </ion-button>
+                    </ion-item>
+                </div>
+                <div id="ticket" style="text-align:center">
+                    <img style="width: 35%;" [src]="logo" alt="">
+                    <h1>{{order.idTrack}}</h1>
+                    <p>{{order.branch.address}}</p>
+                    <p>{{(order.createdAt | date:'h:mm a EEEE d / MMMM / y') | titlecase}}</p>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
